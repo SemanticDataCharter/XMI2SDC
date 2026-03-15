@@ -138,6 +138,18 @@ def _get_xmi_type(elem: ET.Element) -> str:
     return _get_attr(elem, "type") or _get_attr(elem, "xmi.type") or ""
 
 
+def _parse_multiplicity_value(val: str, default: int) -> int:
+    """Parse a single multiplicity bound value.
+
+    Handles: "0", "1", "*", "-1" (EA convention for unbounded), digits.
+    """
+    if val in ("*",):
+        return -1
+    if val.lstrip("-").isdigit():
+        return int(val)
+    return default
+
+
 def _parse_multiplicity(elem: ET.Element) -> Multiplicity:
     """Parse multiplicity from lowerValue/upperValue child elements or attributes."""
     lower = 1
@@ -147,19 +159,19 @@ def _parse_multiplicity(elem: ET.Element) -> Multiplicity:
     for child in elem:
         tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
         if tag == "lowerValue":
-            val = child.get("value", "1")
-            lower = 0 if val in ("0", "*") else int(val) if val.isdigit() else 1
+            lower = _parse_multiplicity_value(child.get("value", "1"), 1)
+            if lower == -1:
+                lower = 0  # lower bound can't be unbounded
         elif tag == "upperValue":
-            val = child.get("value", "1")
-            upper = -1 if val == "*" else int(val) if val.lstrip("-").isdigit() else 1
+            upper = _parse_multiplicity_value(child.get("value", "1"), 1)
 
     # Check for direct attributes
     if "lower" in elem.attrib:
-        val = elem.get("lower", "1")
-        lower = 0 if val in ("0", "*") else int(val) if val.isdigit() else 1
+        lower = _parse_multiplicity_value(elem.get("lower", "1"), 1)
+        if lower == -1:
+            lower = 0
     if "upper" in elem.attrib:
-        val = elem.get("upper", "1")
-        upper = -1 if val == "*" else int(val) if val.lstrip("-").isdigit() else 1
+        upper = _parse_multiplicity_value(elem.get("upper", "1"), 1)
 
     return Multiplicity(lower=lower, upper=upper)
 
@@ -177,13 +189,21 @@ def _parse_attribute(elem: ET.Element, type_map: dict[str, str]) -> UmlAttribute
     elif type_ref:
         type_name = type_ref
 
-    # Check for type child element
+    # Check for type child element (multiple patterns)
     for child in elem:
         tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
         if tag == "type":
+            # Pattern 1: href attribute (generic XMI)
             href = child.get("href", "")
             if href:
                 type_name = href.split("#")[-1] if "#" in href else href
+            # Pattern 2: xmi:idref attribute (Sparx EA)
+            elif _get_attr(child, "idref"):
+                idref = _get_attr(child, "idref")
+                if idref in type_map:
+                    type_name = type_map[idref]
+                else:
+                    type_name = idref  # Preserve ref for downstream
             elif child.get("name"):
                 type_name = child.get("name", type_name)
 
@@ -236,8 +256,19 @@ def _build_type_map(root: ET.Element) -> dict[str, str]:
     return type_map
 
 
+def _is_class_like(xmi_type: str) -> bool:
+    """Check if an xmi:type represents a class-like element.
+
+    Includes uml:Class and uml:Activity (used by BPMN models in Sparx EA).
+    Excludes AssociationClass.
+    """
+    if xmi_type.endswith("AssociationClass"):
+        return False
+    return xmi_type.endswith("Class") or xmi_type.endswith("Activity")
+
+
 def _parse_class(elem: ET.Element, type_map: dict[str, str]) -> UmlClass:
-    """Parse a UML class from an element."""
+    """Parse a UML class (or Activity) from an element."""
     xmi_id = _get_xmi_id(elem)
     name = elem.get("name", "")
     is_abstract = elem.get("isAbstract", "false").lower() == "true"
@@ -268,30 +299,95 @@ def _parse_class(elem: ET.Element, type_map: dict[str, str]) -> UmlClass:
     )
 
 
-def _parse_association(elem: ET.Element, type_map: dict[str, str]) -> UmlAssociation | None:
-    """Parse a UML association from an element."""
+def _build_element_index(root: ET.Element) -> dict[str, ET.Element]:
+    """Build a map of xmi:id → Element for resolving cross-references.
+
+    This is essential for Sparx EA exports where memberEnd references
+    point to ownedAttribute elements on other classes.
+    """
+    index: dict[str, ET.Element] = {}
+    for elem in root.iter():
+        xmi_id = _get_xmi_id(elem)
+        if xmi_id:
+            index[xmi_id] = elem
+    return index
+
+
+def _parse_association_end(
+    elem: ET.Element, type_map: dict[str, str]
+) -> UmlAssociationEnd:
+    """Parse a single association end from an element (ownedEnd or ownedAttribute)."""
+    role = elem.get("name", "")
+    aggregation = elem.get("aggregation", "none")
+    multiplicity = _parse_multiplicity(elem)
+
+    # Resolve type — could be type= attribute or <type xmi:idref="..."/> child
+    type_ref = elem.get("type", "")
+    type_name = type_map.get(type_ref, type_ref) if type_ref else ""
+
+    if not type_name:
+        for child in elem:
+            tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+            if tag == "type":
+                idref = _get_attr(child, "idref")
+                if idref:
+                    type_name = type_map.get(idref, idref)
+                    type_ref = idref
+                    break
+
+    return UmlAssociationEnd(
+        role=role,
+        type_name=type_name,
+        type_xmi_id=type_ref,
+        multiplicity=multiplicity,
+        aggregation=aggregation,
+    )
+
+
+def _parse_association(
+    elem: ET.Element,
+    type_map: dict[str, str],
+    element_index: dict[str, ET.Element] | None = None,
+) -> UmlAssociation | None:
+    """Parse a UML association from an element.
+
+    Handles two patterns:
+    1. Generic XMI: both ends as ownedEnd children of the Association.
+    2. Sparx EA: one ownedEnd on the Association + one ownedAttribute on a
+       class (referenced via memberEnd idref).
+    """
     xmi_id = _get_xmi_id(elem)
     name = elem.get("name", "")
+    element_index = element_index or {}
 
     ends: list[UmlAssociationEnd] = []
+    member_end_refs: list[str] = []
 
     for child in elem:
         tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
-        if tag in ("ownedEnd", "memberEnd", "ownedAttribute"):
-            role = child.get("name", "")
-            type_ref = child.get("type", "")
-            type_name = type_map.get(type_ref, type_ref)
-            aggregation = child.get("aggregation", "none")
-            multiplicity = _parse_multiplicity(child)
-            ends.append(
-                UmlAssociationEnd(
-                    role=role,
-                    type_name=type_name,
-                    type_xmi_id=type_ref,
-                    multiplicity=multiplicity,
-                    aggregation=aggregation,
-                )
-            )
+
+        if tag == "ownedEnd":
+            ends.append(_parse_association_end(child, type_map))
+
+        elif tag == "memberEnd":
+            # EA pattern: memberEnd references an element elsewhere
+            idref = _get_attr(child, "idref")
+            if idref:
+                member_end_refs.append(idref)
+
+    # If we have fewer than 2 inline ends, resolve memberEnd references
+    if len(ends) < 2 and member_end_refs and element_index:
+        # Collect IDs of ends we already have
+        existing_ids = set()
+        for child in elem:
+            tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+            if tag == "ownedEnd":
+                existing_ids.add(_get_xmi_id(child))
+
+        for ref_id in member_end_refs:
+            if ref_id not in existing_ids and ref_id in element_index:
+                ref_elem = element_index[ref_id]
+                ends.append(_parse_association_end(ref_elem, type_map))
 
     if len(ends) < 2:
         return None
@@ -304,8 +400,52 @@ def _parse_association(elem: ET.Element, type_map: dict[str, str]) -> UmlAssocia
     )
 
 
-def _parse_package(elem: ET.Element, type_map: dict[str, str]) -> UmlPackage:
-    """Parse a UML package from an element, recursively handling sub-packages."""
+def _collect_nested_classes(
+    elem: ET.Element,
+    type_map: dict[str, str],
+    classes_out: list[UmlClass],
+    element_index: dict[str, ET.Element] | None = None,
+    associations_out: list[UmlAssociation] | None = None,
+) -> None:
+    """Recursively collect class-like elements nested inside another element.
+
+    Sparx EA BPMN models nest Activity elements inside parent Activities
+    (rather than using packages). This flattens them into the classes list
+    while preserving association collection.
+    """
+    for child in elem:
+        tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+        xmi_type = _get_xmi_type(child)
+
+        if tag == "packagedElement" or tag == "ownedMember":
+            if _is_class_like(xmi_type):
+                cls = _parse_class(child, type_map)
+                classes_out.append(cls)
+                # Recurse into nested elements
+                _collect_nested_classes(
+                    child, type_map, classes_out, element_index, associations_out
+                )
+            elif xmi_type.endswith("Association") and associations_out is not None:
+                assoc = _parse_association(child, type_map, element_index)
+                if assoc:
+                    associations_out.append(assoc)
+
+
+def _parse_package(
+    elem: ET.Element,
+    type_map: dict[str, str],
+    element_index: dict[str, ET.Element] | None = None,
+    associations_out: list[UmlAssociation] | None = None,
+) -> UmlPackage:
+    """Parse a UML package from an element, recursively handling sub-packages.
+
+    Args:
+        elem: Package XML element.
+        type_map: ID-to-name mapping for type resolution.
+        element_index: Optional element index for resolving memberEnd refs.
+        associations_out: Optional list to collect associations found inside
+            packages (EA puts associations inside the same package as classes).
+    """
     xmi_id = _get_xmi_id(elem)
     name = elem.get("name", "")
 
@@ -318,12 +458,24 @@ def _parse_package(elem: ET.Element, type_map: dict[str, str]) -> UmlPackage:
         xmi_type = _get_xmi_type(child)
 
         if tag == "packagedElement" or tag == "ownedMember":
-            if xmi_type.endswith("Class") and not xmi_type.endswith("AssociationClass"):
-                classes.append(_parse_class(child, type_map))
+            if _is_class_like(xmi_type):
+                cls = _parse_class(child, type_map)
+                classes.append(cls)
+                # Recursively collect nested class-like elements
+                # (EA BPMN models nest Activities inside Activities)
+                _collect_nested_classes(
+                    child, type_map, classes, element_index, associations_out
+                )
             elif xmi_type.endswith("Enumeration"):
                 enumerations.append(_parse_enum(child))
             elif xmi_type.endswith("Package"):
-                sub_packages.append(_parse_package(child, type_map))
+                sub_packages.append(
+                    _parse_package(child, type_map, element_index, associations_out)
+                )
+            elif xmi_type.endswith("Association") and associations_out is not None:
+                assoc = _parse_association(child, type_map, element_index)
+                if assoc:
+                    associations_out.append(assoc)
 
     return UmlPackage(
         xmi_id=xmi_id,
@@ -334,9 +486,21 @@ def _parse_package(elem: ET.Element, type_map: dict[str, str]) -> UmlPackage:
     )
 
 
+def _is_extension_or_documentation(tag: str) -> bool:
+    """Check if a tag is an xmi:Extension or xmi:Documentation element to skip."""
+    local = tag.split("}")[-1] if "}" in tag else tag
+    return local in ("Extension", "Documentation")
+
+
 def _parse_generic_xmi(root: ET.Element, model_name: str) -> ParsedXmiModel:
-    """Parse a generic XMI 2.x document into ParsedXmiModel."""
+    """Parse a generic XMI 2.x document into ParsedXmiModel.
+
+    Also handles Sparx EA patterns (memberEnd references, split association
+    ends, xmi:Extension skipping) since EA exports are structurally valid
+    XMI 2.x with vendor extensions.
+    """
     type_map = _build_type_map(root)
+    element_index = _build_element_index(root)
     xmi_version = _detect_xmi_version(root)
 
     packages: list[UmlPackage] = []
@@ -347,6 +511,9 @@ def _parse_generic_xmi(root: ET.Element, model_name: str) -> ParsedXmiModel:
     # Find the UML Model element — could be direct child or nested
     model_elem = None
     for child in root:
+        # Skip xmi:Extension and xmi:Documentation (EA-specific)
+        if _is_extension_or_documentation(child.tag):
+            continue
         tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
         xmi_type = _get_xmi_type(child)
         if tag == "Model" or xmi_type.endswith("Model") or tag.endswith(":Model"):
@@ -360,15 +527,25 @@ def _parse_generic_xmi(root: ET.Element, model_name: str) -> ParsedXmiModel:
         tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
         xmi_type = _get_xmi_type(child)
 
+        # Skip extension/documentation elements that may appear inside Model
+        if _is_extension_or_documentation(child.tag):
+            continue
+
         if tag == "packagedElement" or tag == "ownedMember":
             if xmi_type.endswith("Package"):
-                packages.append(_parse_package(child, type_map))
-            elif xmi_type.endswith("Class") and not xmi_type.endswith("AssociationClass"):
+                packages.append(
+                    _parse_package(child, type_map, element_index, associations)
+                )
+            elif _is_class_like(xmi_type):
                 top_classes.append(_parse_class(child, type_map))
+                # Collect nested class-like elements (BPMN Activities)
+                _collect_nested_classes(
+                    child, type_map, top_classes, element_index, associations
+                )
             elif xmi_type.endswith("Enumeration"):
                 top_enums.append(_parse_enum(child))
             elif xmi_type.endswith("Association"):
-                assoc = _parse_association(child, type_map)
+                assoc = _parse_association(child, type_map, element_index)
                 if assoc:
                     associations.append(assoc)
 
@@ -430,7 +607,7 @@ class XmiParserToolset(BaseToolset):
         if not model_name:
             model_name = path.stem
 
-        xmi_content = path.read_text(encoding="utf-8")
+        xmi_content = self._read_xmi_file(path)
         result = self._parse(xmi_content, model_name)
 
         # Cache the result
@@ -487,7 +664,7 @@ class XmiParserToolset(BaseToolset):
         if not path.is_file():
             raise FileNotFoundError(f"XMI file not found: {file_path}")
 
-        raw_xml = path.read_text(encoding="utf-8")
+        raw_xml = self._read_xmi_file(path)
         try:
             root = ET.fromstring(raw_xml)
         except ET.ParseError as exc:
@@ -512,6 +689,21 @@ class XmiParserToolset(BaseToolset):
             start_time=start,
         )
         return result
+
+    @staticmethod
+    def _read_xmi_file(path: Path) -> str:
+        """Read an XMI file, handling encoding detection.
+
+        Sparx EA exports use windows-1252 encoding. We try UTF-8 first,
+        then fall back to windows-1252, then latin-1 (which never fails).
+        """
+        for encoding in ("utf-8", "windows-1252", "latin-1"):
+            try:
+                return path.read_text(encoding=encoding)
+            except (UnicodeDecodeError, ValueError):
+                continue
+        # latin-1 should never fail, but just in case
+        return path.read_bytes().decode("latin-1")
 
     def _parse(self, xmi_content: str, model_name: str) -> dict:
         """Internal parse method — dialect dispatch."""

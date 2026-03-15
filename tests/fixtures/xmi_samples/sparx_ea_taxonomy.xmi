@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!-- Realistic Sparx Enterprise Architect XMI 2.1 export.
+     Models a 3-level APQC PCF taxonomy with composition-only relationships.
+     Uses EA's actual encoding patterns:
+       - schema.omg.org namespace URIs
+       - EAPK_ / EAID_ ID prefixes
+       - memberEnd references (not just ownedEnd children)
+       - ownedAttribute on classes with association= back-reference
+       - xmi:Extension block with elements, connectors, diagrams
+       - -1 for unlimited multiplicity
+       - xmi:Documentation element
+-->
+<xmi:XMI xmi:version="2.1"
+          xmlns:uml="http://schema.omg.org/spec/UML/2.1"
+          xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
+          xmlns:thecustomprofile="http://www.sparxsystems.com/profiles/thecustomprofile/1.0">
+
+    <xmi:Documentation exporter="Enterprise Architect" exporterVersion="16.1" exporterID="1628"/>
+
+    <uml:Model xmi:type="uml:Model" xmi:id="EAID_model_1" name="EA_Model" visibility="public">
+        <packagedElement xmi:type="uml:Package"
+            xmi:id="EAPK_00000001_0000_0000_0000_000000000001"
+            name="APQC_PCF_Retail" visibility="public">
+
+            <!-- ========================================== -->
+            <!-- Level 1: Category -->
+            <!-- ========================================== -->
+            <packagedElement xmi:type="uml:Class"
+                xmi:id="EAID_CAT_01"
+                name="1.0 Develop Vision and Strategy" visibility="public">
+                <!-- Navigable end to child 1.1 -->
+                <ownedAttribute xmi:type="uml:Property"
+                    xmi:id="EAID_dst_assoc_01"
+                    visibility="public"
+                    association="EAID_assoc_01"
+                    isStatic="false" isReadOnly="false" isDerived="false"
+                    isOrdered="false" isUnique="true" isDerivedUnion="false"
+                    aggregation="none">
+                    <type xmi:idref="EAID_PG_01_01"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI_d01_lo" value="0"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI_d01_hi" value="-1"/>
+                </ownedAttribute>
+                <!-- Navigable end to child 1.2 -->
+                <ownedAttribute xmi:type="uml:Property"
+                    xmi:id="EAID_dst_assoc_02"
+                    visibility="public"
+                    association="EAID_assoc_02"
+                    isStatic="false" isReadOnly="false" isDerived="false"
+                    isOrdered="false" isUnique="true" isDerivedUnion="false"
+                    aggregation="none">
+                    <type xmi:idref="EAID_PG_01_02"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI_d02_lo" value="0"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI_d02_hi" value="-1"/>
+                </ownedAttribute>
+            </packagedElement>
+
+            <!-- ========================================== -->
+            <!-- Level 2: Process Groups -->
+            <!-- ========================================== -->
+            <packagedElement xmi:type="uml:Class"
+                xmi:id="EAID_PG_01_01"
+                name="1.1 Define the business concept and long-term vision" visibility="public">
+                <!-- Navigable end to child 1.1.1 -->
+                <ownedAttribute xmi:type="uml:Property"
+                    xmi:id="EAID_dst_assoc_03"
+                    visibility="public"
+                    association="EAID_assoc_03"
+                    isStatic="false" isReadOnly="false" isDerived="false"
+                    isOrdered="false" isUnique="true" isDerivedUnion="false"
+                    aggregation="none">
+                    <type xmi:idref="EAID_PROC_01_01_01"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI_d03_lo" value="0"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI_d03_hi" value="-1"/>
+                </ownedAttribute>
+                <!-- Navigable end to child 1.1.2 -->
+                <ownedAttribute xmi:type="uml:Property"
+                    xmi:id="EAID_dst_assoc_04"
+                    visibility="public"
+                    association="EAID_assoc_04"
+                    isStatic="false" isReadOnly="false" isDerived="false"
+                    isOrdered="false" isUnique="true" isDerivedUnion="false"
+                    aggregation="none">
+                    <type xmi:idref="EAID_PROC_01_01_02"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI_d04_lo" value="0"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI_d04_hi" value="-1"/>
+                </ownedAttribute>
+            </packagedElement>
+
+            <packagedElement xmi:type="uml:Class"
+                xmi:id="EAID_PG_01_02"
+                name="1.2 Develop business strategy" visibility="public">
+            </packagedElement>
+
+            <!-- ========================================== -->
+            <!-- Level 3: Processes -->
+            <!-- ========================================== -->
+            <packagedElement xmi:type="uml:Class"
+                xmi:id="EAID_PROC_01_01_01"
+                name="1.1.1 Assess the external environment" visibility="public">
+            </packagedElement>
+
+            <packagedElement xmi:type="uml:Class"
+                xmi:id="EAID_PROC_01_01_02"
+                name="1.1.2 Survey market and determine customer needs" visibility="public">
+            </packagedElement>
+
+            <!-- ========================================== -->
+            <!-- Composition Associations (EA pattern) -->
+            <!-- ========================================== -->
+
+            <!-- 1.0 owns 1.1 -->
+            <packagedElement xmi:type="uml:Association"
+                xmi:id="EAID_assoc_01" visibility="public">
+                <memberEnd xmi:idref="EAID_dst_assoc_01"/>
+                <memberEnd xmi:idref="EAID_src_assoc_01"/>
+                <ownedEnd xmi:type="uml:Property"
+                    xmi:id="EAID_src_assoc_01"
+                    visibility="public"
+                    association="EAID_assoc_01"
+                    isStatic="false" isReadOnly="false" isDerived="false"
+                    isOrdered="false" isUnique="true" isDerivedUnion="false"
+                    aggregation="composite">
+                    <type xmi:idref="EAID_CAT_01"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI_s01_lo" value="1"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI_s01_hi" value="1"/>
+                </ownedEnd>
+            </packagedElement>
+
+            <!-- 1.0 owns 1.2 -->
+            <packagedElement xmi:type="uml:Association"
+                xmi:id="EAID_assoc_02" visibility="public">
+                <memberEnd xmi:idref="EAID_dst_assoc_02"/>
+                <memberEnd xmi:idref="EAID_src_assoc_02"/>
+                <ownedEnd xmi:type="uml:Property"
+                    xmi:id="EAID_src_assoc_02"
+                    visibility="public"
+                    association="EAID_assoc_02"
+                    isStatic="false" isReadOnly="false" isDerived="false"
+                    isOrdered="false" isUnique="true" isDerivedUnion="false"
+                    aggregation="composite">
+                    <type xmi:idref="EAID_CAT_01"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI_s02_lo" value="1"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI_s02_hi" value="1"/>
+                </ownedEnd>
+            </packagedElement>
+
+            <!-- 1.1 owns 1.1.1 -->
+            <packagedElement xmi:type="uml:Association"
+                xmi:id="EAID_assoc_03" visibility="public">
+                <memberEnd xmi:idref="EAID_dst_assoc_03"/>
+                <memberEnd xmi:idref="EAID_src_assoc_03"/>
+                <ownedEnd xmi:type="uml:Property"
+                    xmi:id="EAID_src_assoc_03"
+                    visibility="public"
+                    association="EAID_assoc_03"
+                    isStatic="false" isReadOnly="false" isDerived="false"
+                    isOrdered="false" isUnique="true" isDerivedUnion="false"
+                    aggregation="composite">
+                    <type xmi:idref="EAID_PG_01_01"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI_s03_lo" value="1"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI_s03_hi" value="1"/>
+                </ownedEnd>
+            </packagedElement>
+
+            <!-- 1.1 owns 1.1.2 -->
+            <packagedElement xmi:type="uml:Association"
+                xmi:id="EAID_assoc_04" visibility="public">
+                <memberEnd xmi:idref="EAID_dst_assoc_04"/>
+                <memberEnd xmi:idref="EAID_src_assoc_04"/>
+                <ownedEnd xmi:type="uml:Property"
+                    xmi:id="EAID_src_assoc_04"
+                    visibility="public"
+                    association="EAID_assoc_04"
+                    isStatic="false" isReadOnly="false" isDerived="false"
+                    isOrdered="false" isUnique="true" isDerivedUnion="false"
+                    aggregation="composite">
+                    <type xmi:idref="EAID_PG_01_01"/>
+                    <lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI_s04_lo" value="1"/>
+                    <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI_s04_hi" value="1"/>
+                </ownedEnd>
+            </packagedElement>
+
+        </packagedElement>
+    </uml:Model>
+
+    <!-- EA Extension block — parser must skip gracefully -->
+    <xmi:Extension extender="Enterprise Architect" extenderID="16.1">
+        <elements>
+            <element xmi:idref="EAID_CAT_01" xmi:type="uml:Class"
+                     name="1.0 Develop Vision and Strategy" scope="public">
+                <model package="EAPK_00000001_0000_0000_0000_000000000001"
+                       tpos="0" ea_localid="2" ea_eleType="element"/>
+                <properties isSpecification="false" sType="Class" nType="0"
+                            scope="public" isRoot="false" isLeaf="false"
+                            isAbstract="false" isActive="false"/>
+                <project author="modeler" version="1.0" phase="1.0"
+                         created="2026-03-15 00:00:00" modified="2026-03-15 00:00:00"
+                         complexity="1" status="Proposed"/>
+                <tags/>
+                <xrefs/>
+                <extendedProperties tagged="0" package_name="APQC_PCF_Retail"/>
+                <links>
+                    <Aggregation xmi:id="EAID_assoc_01"
+                                 start="EAID_CAT_01" end="EAID_PG_01_01"/>
+                    <Aggregation xmi:id="EAID_assoc_02"
+                                 start="EAID_CAT_01" end="EAID_PG_01_02"/>
+                </links>
+            </element>
+            <element xmi:idref="EAID_PG_01_01" xmi:type="uml:Class"
+                     name="1.1 Define the business concept and long-term vision" scope="public">
+                <model package="EAPK_00000001_0000_0000_0000_000000000001"
+                       tpos="0" ea_localid="3" ea_eleType="element"/>
+                <properties isSpecification="false" sType="Class" nType="0"
+                            scope="public" isRoot="false" isLeaf="false"
+                            isAbstract="false" isActive="false"/>
+                <tags/>
+                <xrefs/>
+                <links>
+                    <Aggregation xmi:id="EAID_assoc_03"
+                                 start="EAID_PG_01_01" end="EAID_PROC_01_01_01"/>
+                    <Aggregation xmi:id="EAID_assoc_04"
+                                 start="EAID_PG_01_01" end="EAID_PROC_01_01_02"/>
+                </links>
+            </element>
+        </elements>
+        <connectors>
+            <connector xmi:idref="EAID_assoc_01">
+                <source xmi:idref="EAID_CAT_01">
+                    <model ea_localid="2" type="Class" name="1.0 Develop Vision and Strategy"/>
+                    <type multiplicity="1" aggregation="none" containment="Unspecified"/>
+                </source>
+                <target xmi:idref="EAID_PG_01_01">
+                    <model ea_localid="3" type="Class" name="1.1 Define the business concept and long-term vision"/>
+                    <type aggregation="composite" containment="Unspecified"/>
+                </target>
+                <properties ea_type="Aggregation" subtype="Strong" direction="Source -&gt; Destination"/>
+            </connector>
+        </connectors>
+        <primitivetypes>
+            <packagedElement xmi:type="uml:Package" xmi:id="EAPrimitiveTypesPackage"
+                             name="EA_PrimitiveTypes_Package" visibility="public"/>
+        </primitivetypes>
+        <diagrams/>
+    </xmi:Extension>
+</xmi:XMI>

@@ -54,5 +54,10 @@ def magicdraw_xmi_path(xmi_samples_dir: Path) -> Path:
 
 
 @pytest.fixture
+def sparx_ea_taxonomy_path(xmi_samples_dir: Path) -> Path:
+    return xmi_samples_dir / "sparx_ea_taxonomy.xmi"
+
+
+@pytest.fixture
 def generic_xmi_content(generic_xmi_path: Path) -> str:
     return generic_xmi_path.read_text()

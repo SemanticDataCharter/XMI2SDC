@@ -8,9 +8,12 @@ from xmi2sdc.common.config import XMI2SDCConfig
 from xmi2sdc.common.exceptions import XmiParseError
 from xmi2sdc.toolsets.parser import (
     XmiParserToolset,
+    _build_element_index,
     _detect_dialect,
     _detect_xmi_version,
+    _parse_association,
     _parse_generic_xmi,
+    _parse_multiplicity_value,
 )
 from xmi2sdc.common.xmi_types import XmiDialect
 import xml.etree.ElementTree as ET
@@ -239,3 +242,119 @@ async def test_get_tools(parser):
     assert "parse_xmi_file" in tool_names
     assert "parse_xmi_string" in tool_names
     assert "detect_dialect" in tool_names
+
+
+# --- Sparx EA Taxonomy (deep composition hierarchy) ---
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_taxonomy_dialect(parser, sparx_ea_taxonomy_path):
+    """Sparx EA taxonomy should be detected as SPARX_EA dialect."""
+    result = await parser.parse_xmi_file(str(sparx_ea_taxonomy_path))
+    assert result["dialect"] == "sparx_ea"
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_taxonomy_classes(parser, sparx_ea_taxonomy_path):
+    """Should find all 5 taxonomy classes across all levels."""
+    result = await parser.parse_xmi_file(str(sparx_ea_taxonomy_path))
+
+    # All classes should be inside the APQC_PCF_Retail package
+    assert len(result["packages"]) == 1
+    pkg = result["packages"][0]
+    assert pkg["name"] == "APQC_PCF_Retail"
+
+    class_names = {c["name"] for c in pkg["classes"]}
+    assert "1.0 Develop Vision and Strategy" in class_names
+    assert "1.1 Define the business concept and long-term vision" in class_names
+    assert "1.2 Develop business strategy" in class_names
+    assert "1.1.1 Assess the external environment" in class_names
+    assert "1.1.2 Survey market and determine customer needs" in class_names
+    assert len(class_names) == 5
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_taxonomy_associations(parser, sparx_ea_taxonomy_path):
+    """Should find all 4 composition associations via memberEnd resolution."""
+    result = await parser.parse_xmi_file(str(sparx_ea_taxonomy_path))
+    associations = result["associations"]
+    assert len(associations) == 4
+
+    # All should be composition (one end has aggregation=composite)
+    for assoc in associations:
+        src_agg = assoc["source"]["aggregation"]
+        tgt_agg = assoc["target"]["aggregation"]
+        assert src_agg == "composite" or tgt_agg == "composite", (
+            f"Association should be composition: {assoc}"
+        )
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_taxonomy_composition_hierarchy(parser, sparx_ea_taxonomy_path):
+    """Composition hierarchy should reflect correct parent-child relationships."""
+    result = await parser.parse_xmi_file(str(sparx_ea_taxonomy_path))
+    associations = result["associations"]
+
+    # Build parent->children map from composition associations
+    hierarchy: dict[str, list[str]] = {}
+    for assoc in associations:
+        src = assoc["source"]
+        tgt = assoc["target"]
+        if src["aggregation"] == "composite":
+            parent = src["type_name"]
+            child = tgt["type_name"]
+        else:
+            parent = tgt["type_name"]
+            child = src["type_name"]
+        hierarchy.setdefault(parent, []).append(child)
+
+    # Verify: 1.0 -> [1.1, 1.2]  and  1.1 -> [1.1.1, 1.1.2]
+    # type_name might be the xmi_id if name not resolved, so check via type_map
+    # The type_map should resolve EAID_CAT_01 -> "1.0 Develop Vision and Strategy" etc.
+    cat_children = None
+    pg_children = None
+    for parent, children in hierarchy.items():
+        if "1.0" in parent:
+            cat_children = children
+        elif "1.1 Define" in parent:
+            pg_children = children
+
+    assert cat_children is not None, f"Category 1.0 not found as parent. Hierarchy: {hierarchy}"
+    assert len(cat_children) == 2
+    assert pg_children is not None, f"Process Group 1.1 not found as parent. Hierarchy: {hierarchy}"
+    assert len(pg_children) == 2
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_taxonomy_skips_extension(parser, sparx_ea_taxonomy_path):
+    """xmi:Extension block should not produce spurious classes or packages."""
+    result = await parser.parse_xmi_file(str(sparx_ea_taxonomy_path))
+
+    # Should only have classes from the UML model, not from xmi:Extension
+    pkg = result["packages"][0]
+    # No class should have EA extension element names
+    for cls in pkg["classes"]:
+        assert cls["name"] != "EA_PrimitiveTypes_Package"
+
+
+# --- Multiplicity edge cases ---
+
+
+def test_parse_multiplicity_value_star():
+    """'*' should map to -1 (unbounded)."""
+    assert _parse_multiplicity_value("*", 1) == -1
+
+
+def test_parse_multiplicity_value_negative_one():
+    """'-1' (EA convention) should map to -1 (unbounded)."""
+    assert _parse_multiplicity_value("-1", 1) == -1
+
+
+def test_parse_multiplicity_value_digit():
+    """Normal digit should be returned as int."""
+    assert _parse_multiplicity_value("5", 1) == 5
+
+
+def test_parse_multiplicity_value_default():
+    """Non-numeric value should return default."""
+    assert _parse_multiplicity_value("abc", 42) == 42
