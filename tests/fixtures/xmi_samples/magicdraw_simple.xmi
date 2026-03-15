@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001"
+         xmlns:MagicDraw_Profile="http://www.nomagic.com/magicdraw/UML/2.5.1"
+         xmi:version="2.1">
+  <uml:Model xmi:type="uml:Model" xmi:id="md_model" name="MDModel">
+    <packagedElement xmi:type="uml:Class" xmi:id="md_cls_product" name="Product">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="md_attr_sku" name="sku" type="md_type_str"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="md_attr_price" name="price" type="md_type_double"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="md_attr_qty" name="quantity" type="md_type_int"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="md_type_str" name="String"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="md_type_double" name="Double"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="md_type_int" name="Integer"/>
+  </uml:Model>
+</xmi:XMI>

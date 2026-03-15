@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001"
+         xmlns:sparx="http://www.sparxsystems.com/profiles/thecustomprofile/1.0"
+         xmi:version="2.1">
+  <uml:Model xmi:type="uml:Model" xmi:id="ea_model" name="EAModel">
+    <packagedElement xmi:type="uml:Package" xmi:id="ea_pkg" name="DataModel">
+      <packagedElement xmi:type="uml:Class" xmi:id="ea_cls_customer" name="Customer">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ea_attr_id" name="customerId" type="ea_type_int" isID="true"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ea_attr_name" name="fullName" type="ea_type_str"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ea_attr_active" name="isActive" type="ea_type_bool"/>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="ea_type_int" name="Integer"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="ea_type_str" name="String"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="ea_type_bool" name="Boolean"/>
+  </uml:Model>
+</xmi:XMI>

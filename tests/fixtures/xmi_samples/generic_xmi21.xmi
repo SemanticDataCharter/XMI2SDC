@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001"
+         xmi:version="2.1">
+  <uml:Model xmi:type="uml:Model" xmi:id="model_1" name="SampleModel">
+    <!-- Package: Core -->
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg_core" name="Core">
+      <!-- Class: Person -->
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_person" name="Person">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_name" name="name" type="type_string">
+          <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_age" name="age" type="type_integer">
+          <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_email" name="email" type="type_string">
+          <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_active" name="isActive" type="type_boolean"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_dob" name="dateOfBirth" type="type_date"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_weight" name="weight" type="type_float"/>
+      </packagedElement>
+
+      <!-- Class: Address (leaf/atomic) -->
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_address" name="Address">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_street" name="street" type="type_string"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_city" name="city" type="type_string"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="attr_zip" name="zipCode" type="type_string"/>
+      </packagedElement>
+
+      <!-- Enumeration: Gender -->
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_gender" name="Gender">
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_male" name="Male"/>
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_female" name="Female"/>
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_other" name="Other"/>
+      </packagedElement>
+    </packagedElement>
+
+    <!-- Top-level class: Organization -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_org" name="Organization">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_orgname" name="name" type="type_string"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_founded" name="foundedDate" type="type_date"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_count" name="employeeCount" type="type_nonneg"/>
+    </packagedElement>
+
+    <!-- Top-level enumeration: Status -->
+    <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_status" name="Status">
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_active" name="Active"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_inactive" name="Inactive"/>
+    </packagedElement>
+
+    <!-- Association: Organization owns Addresses (composition) -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_org_addr" name="orgAddresses">
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_org" name="organization" type="cls_org" aggregation="composite">
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_addr" name="addresses" type="cls_address">
+        <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+      </ownedEnd>
+    </packagedElement>
+
+    <!-- Primitive type stubs (for type reference resolution) -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_string" name="String"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_integer" name="Integer"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_boolean" name="Boolean"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_date" name="Date"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_float" name="Float"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_nonneg" name="NonNegativeInteger"/>
+  </uml:Model>
+</xmi:XMI>

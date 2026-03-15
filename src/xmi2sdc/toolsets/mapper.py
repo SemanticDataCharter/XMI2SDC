@@ -1,0 +1,373 @@
+"""SDC Mapper Toolset — deterministic UML-to-SDC4 type mapping.
+
+Phase 1: Pure rules-based mapping, no LLM. Applies the type mapping
+table to produce a JSON mapping plan that the Assembler can execute.
+"""
+
+from __future__ import annotations
+
+import json
+import time
+from typing import Optional
+
+from google.adk.tools import FunctionTool
+from google.adk.tools.base_toolset import BaseToolset
+
+from xmi2sdc.common.audit import AuditLogger
+from xmi2sdc.common.cache import CacheManager
+from xmi2sdc.common.config import XMI2SDCConfig
+from xmi2sdc.common.exceptions import MappingError
+
+# Canonical UML primitive type names (case-insensitive matching)
+_BOOLEAN_TYPES = {"boolean", "bool"}
+_INTEGER_TYPES = {"integer", "int", "long", "short", "byte", "unsignedint", "positiveinteger"}
+_UNSIGNED_INTEGER_TYPES = {"unsignedint", "unsignedlong", "unsignedshort", "unsignedbyte",
+                           "nonnegativeinteger", "positiveinteger", "natural"}
+_REAL_TYPES = {"real", "float", "double", "decimal", "number"}
+_STRING_TYPES = {"string", "char", "text", "name", "token", "uri", "url", "id"}
+_TEMPORAL_TYPES = {"date", "datetime", "time", "timestamp", "instant", "duration",
+                   "localdate", "localtime", "localdatetime"}
+
+
+def _normalize_type_name(type_name: str) -> str:
+    """Normalize a UML type name for matching (lowercase, strip whitespace)."""
+    return type_name.strip().lower().replace(" ", "").replace("_", "")
+
+
+def _map_primitive_type(type_name: str, is_unsigned: bool = False) -> dict:
+    """Map a UML primitive type to an SDC4 type specification.
+
+    Args:
+        type_name: The UML type name.
+        is_unsigned: Whether the integer type is known to be non-negative.
+
+    Returns:
+        Dict with sdc4_type and any additional configuration.
+    """
+    normalized = _normalize_type_name(type_name)
+
+    if normalized in _BOOLEAN_TYPES:
+        return {"sdc4_type": "XdBoolean"}
+
+    if normalized in _UNSIGNED_INTEGER_TYPES:
+        return {"sdc4_type": "XdCount"}
+
+    if normalized in _INTEGER_TYPES:
+        if is_unsigned:
+            return {"sdc4_type": "XdCount"}
+        return {"sdc4_type": "XdQuantity", "restriction": "integer"}
+
+    if normalized in _REAL_TYPES:
+        return {"sdc4_type": "XdQuantity"}
+
+    if normalized in _TEMPORAL_TYPES:
+        return {"sdc4_type": "XdTemporal"}
+
+    if normalized in _STRING_TYPES:
+        return {"sdc4_type": "XdString"}
+
+    # Unknown primitive — default to XdString
+    return {"sdc4_type": "XdString", "unmapped_source_type": type_name}
+
+
+def _map_multiplicity(lower: int, upper: int) -> dict:
+    """Map UML multiplicity to SDC4 occurrence constraints.
+
+    Args:
+        lower: Lower bound (0 or positive integer).
+        upper: Upper bound (-1 for unbounded, or positive integer).
+
+    Returns:
+        Dict with minOccurs, maxOccurs, and is_list flag.
+    """
+    min_occurs = max(0, lower)
+    max_occurs = upper if upper > 0 else 9999  # SDC4 uses high number for unbounded
+    is_list = upper == -1 or upper > 1
+
+    return {
+        "minOccurs": min_occurs,
+        "maxOccurs": max_occurs,
+        "is_list": is_list,
+    }
+
+
+class SdcMapperToolset(BaseToolset):
+    """Deterministic UML-to-SDC4 type mapper — no LLM in Phase 1.
+
+    Applies the type mapping rules to a ParsedXmiModel and produces
+    a JSON mapping plan for downstream Assembly API calls.
+    """
+
+    def __init__(self, config: XMI2SDCConfig, **kwargs):
+        super().__init__(**kwargs)
+        self._config = config
+        self._cache = CacheManager(config.cache.root)
+        self._cache.ensure_dirs()
+        self._audit = AuditLogger(config.audit.path, config.audit.log_level)
+
+    async def get_tools(self, readonly_context=None) -> list:
+        """Return the mapper tools as FunctionTool instances."""
+        tools = [
+            FunctionTool(self.map_model),
+            FunctionTool(self.map_class),
+            FunctionTool(self.map_type),
+        ]
+        if readonly_context and self.tool_filter:
+            return [t for t in tools if self._is_tool_selected(t, readonly_context)]
+        return tools
+
+    async def map_model(self, parsed_model: dict) -> dict:
+        """Map an entire ParsedXmiModel to an SDC4 mapping plan.
+
+        Takes the output of parse_xmi_file/parse_xmi_string and produces
+        a complete mapping plan with SDC4 type assignments for all classes,
+        attributes, and associations.
+
+        Args:
+            parsed_model: Dict representation of ParsedXmiModel (from parser).
+
+        Returns:
+            Dict with model_name, components (list of SDC4 component specs),
+            clusters, and unmapped items.
+        """
+        start = time.monotonic()
+        model_name = parsed_model.get("model_name", "unknown")
+
+        components: list[dict] = []
+        clusters: list[dict] = []
+        unmapped: list[dict] = []
+
+        # Build class lookup for association resolution
+        all_classes = self._collect_all_classes(parsed_model)
+        enum_map = self._build_enum_map(parsed_model)
+
+        # Map each class
+        for cls in all_classes:
+            class_result = self._map_single_class(cls, enum_map)
+            # Always extract components and unmapped items
+            components.extend(class_result.get("components", []))
+            unmapped.extend(class_result.get("unmapped", []))
+            # Add cluster definition if class has components
+            if class_result.get("is_cluster") and class_result.get("cluster_name"):
+                clusters.append({
+                    "cluster_name": class_result["cluster_name"],
+                    "source_xmi_id": class_result.get("source_xmi_id", ""),
+                    "component_refs": class_result.get("component_refs", []),
+                })
+
+        # Map associations to cluster containment or semantic links
+        for assoc in parsed_model.get("associations", []):
+            assoc_mapping = self._map_association(assoc, all_classes)
+            if assoc_mapping:
+                clusters.append(assoc_mapping)
+
+        result = {
+            "model_name": model_name,
+            "dialect": parsed_model.get("dialect", "generic_xmi21"),
+            "components": components,
+            "clusters": clusters,
+            "unmapped": unmapped,
+            "summary": {
+                "total_classes": len(all_classes),
+                "total_components": len(components),
+                "total_clusters": len(clusters),
+                "total_unmapped": len(unmapped),
+            },
+        }
+
+        # Cache the mapping plan
+        cache_path = self._cache.mapping_path(model_name)
+        cache_path.write_text(json.dumps(result, indent=2))
+
+        self._audit.log(
+            agent="mapper",
+            tool="map_model",
+            inputs={"model_name": model_name},
+            outputs=result,
+            start_time=start,
+        )
+        return result
+
+    async def map_class(self, uml_class: dict) -> dict:
+        """Map a single UML class to SDC4 components.
+
+        Args:
+            uml_class: Dict representation of a UmlClass.
+
+        Returns:
+            Dict with components list and/or cluster definition.
+        """
+        start = time.monotonic()
+        result = self._map_single_class(uml_class, {})
+
+        self._audit.log(
+            agent="mapper",
+            tool="map_class",
+            inputs={"class_name": uml_class.get("name", "unknown")},
+            outputs=result,
+            start_time=start,
+        )
+        return result
+
+    async def map_type(self, uml_type_name: str) -> dict:
+        """Map a single UML type name to an SDC4 type.
+
+        Useful for quick lookups and testing.
+
+        Args:
+            uml_type_name: UML type name (e.g., "String", "Integer", "Boolean").
+
+        Returns:
+            Dict with sdc4_type and any configuration.
+        """
+        start = time.monotonic()
+        result = _map_primitive_type(uml_type_name)
+
+        self._audit.log(
+            agent="mapper",
+            tool="map_type",
+            inputs={"uml_type_name": uml_type_name},
+            outputs=result,
+            start_time=start,
+        )
+        return result
+
+    def _collect_all_classes(self, parsed_model: dict) -> list[dict]:
+        """Flatten all classes from packages and top-level."""
+        result = list(parsed_model.get("top_level_classes", []))
+        for pkg in parsed_model.get("packages", []):
+            result.extend(self._collect_classes_from_package(pkg))
+        return result
+
+    def _collect_classes_from_package(self, pkg: dict) -> list[dict]:
+        """Recursively collect classes from a package dict."""
+        result = list(pkg.get("classes", []))
+        for sub in pkg.get("sub_packages", []):
+            result.extend(self._collect_classes_from_package(sub))
+        return result
+
+    def _build_enum_map(self, parsed_model: dict) -> dict[str, list[str]]:
+        """Build a map of enumeration xmi_id → list of literal names."""
+        enum_map: dict[str, list[str]] = {}
+        for enum in parsed_model.get("top_level_enumerations", []):
+            xmi_id = enum.get("xmi_id", "")
+            literals = [lit.get("name", "") for lit in enum.get("literals", [])]
+            if xmi_id:
+                enum_map[xmi_id] = literals
+            # Also map by name for type_name references
+            name = enum.get("name", "")
+            if name:
+                enum_map[name] = literals
+        for pkg in parsed_model.get("packages", []):
+            self._collect_enums_from_package(pkg, enum_map)
+        return enum_map
+
+    def _collect_enums_from_package(self, pkg: dict, enum_map: dict) -> None:
+        """Recursively collect enumerations from packages."""
+        for enum in pkg.get("enumerations", []):
+            xmi_id = enum.get("xmi_id", "")
+            literals = [lit.get("name", "") for lit in enum.get("literals", [])]
+            if xmi_id:
+                enum_map[xmi_id] = literals
+            name = enum.get("name", "")
+            if name:
+                enum_map[name] = literals
+        for sub in pkg.get("sub_packages", []):
+            self._collect_enums_from_package(sub, enum_map)
+
+    def _map_single_class(self, cls: dict, enum_map: dict) -> dict:
+        """Map a single class to SDC4 components or a cluster."""
+        class_name = cls.get("name", "unknown")
+        attributes = cls.get("attributes", [])
+
+        # A class with attributes maps to individual SDC4 components
+        # grouped in a Cluster
+        if not attributes:
+            # Empty class — becomes a Cluster placeholder
+            return {
+                "is_cluster": True,
+                "cluster_name": class_name,
+                "source_xmi_id": cls.get("xmi_id", ""),
+                "component_refs": [],
+            }
+
+        components: list[dict] = []
+        unmapped: list[dict] = []
+
+        for attr in attributes:
+            attr_name = attr.get("name", "")
+            type_name = attr.get("type_name", "String")
+            mult = attr.get("multiplicity", {"lower": 1, "upper": 1})
+
+            # Check if type is an enumeration
+            if type_name in enum_map:
+                comp = {
+                    "source_class": class_name,
+                    "source_attribute": attr_name,
+                    "source_type": type_name,
+                    "sdc4_type": "XdString",
+                    "enumerations": enum_map[type_name],
+                    "label": f"{class_name}.{attr_name}",
+                    **_map_multiplicity(mult.get("lower", 1), mult.get("upper", 1)),
+                }
+                components.append(comp)
+                continue
+
+            # Map primitive type
+            type_mapping = _map_primitive_type(type_name)
+            comp = {
+                "source_class": class_name,
+                "source_attribute": attr_name,
+                "source_type": type_name,
+                "label": f"{class_name}.{attr_name}",
+                **type_mapping,
+                **_map_multiplicity(mult.get("lower", 1), mult.get("upper", 1)),
+            }
+
+            if "unmapped_source_type" in type_mapping:
+                unmapped.append(comp)
+            else:
+                components.append(comp)
+
+        # Create a cluster for this class if it has components
+        result: dict = {
+            "is_cluster": len(components) > 0,
+            "components": components,
+            "unmapped": unmapped,
+        }
+
+        if components:
+            result["cluster_name"] = class_name
+            result["source_xmi_id"] = cls.get("xmi_id", "")
+            result["component_refs"] = [c["label"] for c in components]
+
+        return result
+
+    def _map_association(self, assoc: dict, all_classes: list[dict]) -> Optional[dict]:
+        """Map a UML association to an SDC4 cluster containment."""
+        source = assoc.get("source", {})
+        target = assoc.get("target", {})
+
+        source_agg = source.get("aggregation", "none")
+        target_agg = target.get("aggregation", "none")
+
+        # Composition → cluster containment
+        if source_agg == "composite" or target_agg == "composite":
+            # The composite end owns the other
+            if source_agg == "composite":
+                owner_name = source.get("type_name", "")
+                contained_name = target.get("type_name", "")
+            else:
+                owner_name = target.get("type_name", "")
+                contained_name = source.get("type_name", "")
+
+            return {
+                "is_cluster": True,
+                "cluster_name": owner_name,
+                "source_xmi_id": assoc.get("xmi_id", ""),
+                "component_refs": [contained_name],
+                "containment_type": "composition",
+            }
+
+        # Aggregation or plain association — semantic link (Phase 3)
+        return None

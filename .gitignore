@@ -1,3 +1,7 @@
+# XMI2SDC cache and output
+.xmi2sdc-cache/
+output/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
