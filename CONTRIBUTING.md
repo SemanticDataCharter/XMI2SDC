@@ -236,7 +236,7 @@ All tool invocations must write to the structured audit log. Use the shared `aud
 
 ## License & Ownership
 
-XMI2SDC is copyright 2026 [Axius SDC, Inc.](https://axius-sdc.github.io) and is proprietary software. All rights reserved.
+XMI2SDC is copyright 2026 [Axius SDC, Inc.](https://axius-sdc.com/#contact) and is proprietary software. All rights reserved.
 
 By contributing to XMI2SDC, you agree that your contributions become the property of Axius SDC, Inc. and are subject to the project's proprietary license.
 
