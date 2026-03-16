@@ -302,6 +302,32 @@ async def test_map_caches_result(mapper, tmp_path):
 
 
 @pytest.mark.asyncio
+async def test_map_model_fish_herring(mapper, fish_herring_path):
+    """Fish-Herring hierarchy should produce flattened component counts."""
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(fish_herring_path))
+    mapping = await mapper.map_model(parsed)
+
+    # Build cluster → component count map
+    cluster_map = {}
+    for cluster in mapping["clusters"]:
+        name = cluster["cluster_name"]
+        cluster_map[name] = len(cluster.get("component_refs", []))
+
+    # Fish: 4 own attributes → 4 components
+    assert cluster_map.get("Fish") == 4, f"Fish: expected 4, got {cluster_map.get('Fish')}"
+    # Herring: 4 inherited + 1 own → 5 components
+    assert cluster_map.get("Herring") == 5, f"Herring: expected 5, got {cluster_map.get('Herring')}"
+    # DanubeHerring: 5 inherited + 1 own → 6 components
+    assert cluster_map.get("DanubeHerring") == 6, (
+        f"DanubeHerring: expected 6, got {cluster_map.get('DanubeHerring')}"
+    )
+
+
+@pytest.mark.asyncio
 async def test_get_tools(mapper):
     """get_tools should return 3 FunctionTools."""
     tools = await mapper.get_tools()
@@ -310,3 +336,162 @@ async def test_get_tools(mapper):
     assert "map_model" in tool_names
     assert "map_class" in tool_names
     assert "map_type" in tool_names
+
+
+# --- Association mapping (plain, shared, composition) ---
+
+
+@pytest.mark.asyncio
+async def test_map_model_it_employment(mapper, it_employment_path):
+    """IT Employment: 4 clusters (2 class + 2 association), 4 components."""
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(it_employment_path))
+    mapping = await mapper.map_model(parsed)
+
+    # 2 empty class clusters + 2 association clusters
+    assert len(mapping["clusters"]) == 4
+
+    # Each association produces 2 role components → 4 total
+    assert len(mapping["components"]) == 4
+
+    # Association clusters should have association_type
+    assoc_clusters = [c for c in mapping["clusters"] if "association_type" in c]
+    assert len(assoc_clusters) == 2
+    for ac in assoc_clusters:
+        assert ac["association_type"] == "plain"
+
+
+@pytest.mark.asyncio
+async def test_map_plain_association_unit(mapper):
+    """Plain association should produce a cluster with 2 role XdString components."""
+    parsed_model = {
+        "model_name": "plain_assoc_test",
+        "dialect": "generic_xmi21",
+        "packages": [],
+        "top_level_classes": [],
+        "top_level_enumerations": [],
+        "associations": [
+            {
+                "xmi_id": "a1",
+                "name": "worksFor",
+                "documentation": "Employment link.",
+                "source": {
+                    "role": "worker",
+                    "type_name": "Person",
+                    "type_xmi_id": "c1",
+                    "multiplicity": {"lower": 0, "upper": -1},
+                    "aggregation": "none",
+                },
+                "target": {
+                    "role": "employer",
+                    "type_name": "Organization",
+                    "type_xmi_id": "c2",
+                    "multiplicity": {"lower": 1, "upper": 1},
+                    "aggregation": "none",
+                },
+            }
+        ],
+    }
+
+    mapping = await mapper.map_model(parsed_model)
+    clusters = mapping["clusters"]
+    components = mapping["components"]
+
+    assert len(clusters) == 1
+    cluster = clusters[0]
+    assert cluster["cluster_name"] == "worksFor"
+    assert cluster["association_type"] == "plain"
+    assert cluster["description"] == "Employment link."
+    assert len(cluster["component_refs"]) == 2
+
+    assert len(components) == 2
+    labels = {c["label"] for c in components}
+    assert labels == {"worksFor.worker", "worksFor.employer"}
+
+    # Both should be XdString
+    for comp in components:
+        assert comp["sdc4_type"] == "XdString"
+        assert comp["referenced_type"] in ("Person", "Organization")
+
+
+@pytest.mark.asyncio
+async def test_map_shared_aggregation(mapper):
+    """Shared aggregation should produce association cluster with type='shared'."""
+    parsed_model = {
+        "model_name": "shared_assoc_test",
+        "dialect": "generic_xmi21",
+        "packages": [],
+        "top_level_classes": [],
+        "top_level_enumerations": [],
+        "associations": [
+            {
+                "xmi_id": "a1",
+                "name": "usesLibrary",
+                "documentation": "",
+                "source": {
+                    "role": "user",
+                    "type_name": "Application",
+                    "type_xmi_id": "c1",
+                    "multiplicity": {"lower": 0, "upper": -1},
+                    "aggregation": "none",
+                },
+                "target": {
+                    "role": "library",
+                    "type_name": "SharedLibrary",
+                    "type_xmi_id": "c2",
+                    "multiplicity": {"lower": 1, "upper": 1},
+                    "aggregation": "shared",
+                },
+            }
+        ],
+    }
+
+    mapping = await mapper.map_model(parsed_model)
+    clusters = mapping["clusters"]
+    assert len(clusters) == 1
+    assert clusters[0]["association_type"] == "shared"
+    assert len(mapping["components"]) == 2
+
+
+@pytest.mark.asyncio
+async def test_map_composition_regression(mapper):
+    """Composition associations should still produce containment clusters (no regression)."""
+    parsed_model = {
+        "model_name": "comp_regression",
+        "dialect": "generic_xmi21",
+        "packages": [],
+        "top_level_classes": [],
+        "top_level_enumerations": [],
+        "associations": [
+            {
+                "xmi_id": "a1",
+                "name": "owns",
+                "documentation": "",
+                "source": {
+                    "role": "owner",
+                    "type_name": "Parent",
+                    "type_xmi_id": "c1",
+                    "multiplicity": {"lower": 1, "upper": 1},
+                    "aggregation": "composite",
+                },
+                "target": {
+                    "role": "child",
+                    "type_name": "Child",
+                    "type_xmi_id": "c2",
+                    "multiplicity": {"lower": 0, "upper": -1},
+                    "aggregation": "none",
+                },
+            }
+        ],
+    }
+
+    mapping = await mapper.map_model(parsed_model)
+    clusters = mapping["clusters"]
+    assert len(clusters) == 1
+    assert clusters[0]["containment_type"] == "composition"
+    assert clusters[0]["cluster_name"] == "Parent"
+    # Composition should NOT produce association components
+    assert len(mapping["components"]) == 0

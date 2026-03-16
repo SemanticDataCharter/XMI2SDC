@@ -11,6 +11,7 @@ from xmi2sdc.toolsets.parser import (
     _build_element_index,
     _detect_dialect,
     _detect_xmi_version,
+    _extract_documentation,
     _parse_association,
     _parse_generic_xmi,
     _parse_multiplicity_value,
@@ -358,3 +359,179 @@ def test_parse_multiplicity_value_digit():
 def test_parse_multiplicity_value_default():
     """Non-numeric value should return default."""
     assert _parse_multiplicity_value("abc", 42) == 42
+
+
+# --- Fish-Herring model (documentation + generalization) ---
+
+
+@pytest.mark.asyncio
+async def test_fish_herring_dialect(parser, fish_herring_path):
+    """Fish-Herring XMI should be detected as Sparx EA dialect."""
+    result = await parser.detect_dialect(str(fish_herring_path))
+    assert result["dialect"] == "sparx_ea"
+
+
+@pytest.mark.asyncio
+async def test_fish_herring_classes(parser, fish_herring_path):
+    """Should find 3 classes: Fish, Herring, DanubeHerring."""
+    result = await parser.parse_xmi_file(str(fish_herring_path))
+    pkg = result["packages"][0]
+    class_names = [c["name"] for c in pkg["classes"]]
+    assert sorted(class_names) == ["DanubeHerring", "Fish", "Herring"]
+
+
+@pytest.mark.asyncio
+async def test_fish_herring_attributes(parser, fish_herring_path):
+    """Each class should have its own (non-inherited) attributes."""
+    result = await parser.parse_xmi_file(str(fish_herring_path))
+    pkg = result["packages"][0]
+    by_name = {c["name"]: c for c in pkg["classes"]}
+
+    fish_attrs = [a["name"] for a in by_name["Fish"]["attributes"]]
+    assert sorted(fish_attrs) == ["fins", "head", "scales", "tail"]
+
+    herring_attrs = [a["name"] for a in by_name["Herring"]["attributes"]]
+    assert herring_attrs == ["herringSmell"]
+
+    danube_attrs = [a["name"] for a in by_name["DanubeHerring"]["attributes"]]
+    assert danube_attrs == ["iodineSmell"]
+
+
+@pytest.mark.asyncio
+async def test_fish_herring_generalization(parser, fish_herring_path):
+    """Generalization chain: DanubeHerring -> Herring -> Fish."""
+    result = await parser.parse_xmi_file(str(fish_herring_path))
+    pkg = result["packages"][0]
+    by_name = {c["name"]: c for c in pkg["classes"]}
+
+    assert by_name["Fish"]["parent_xmi_ids"] == []
+    assert by_name["Herring"]["parent_xmi_ids"] == ["CLASS_FISH"]
+    assert by_name["DanubeHerring"]["parent_xmi_ids"] == ["CLASS_HERRING"]
+
+
+@pytest.mark.asyncio
+async def test_fish_herring_class_documentation(parser, fish_herring_path):
+    """Class-level ownedComment documentation should be extracted."""
+    result = await parser.parse_xmi_file(str(fish_herring_path))
+    pkg = result["packages"][0]
+    by_name = {c["name"]: c for c in pkg["classes"]}
+
+    assert "Base class for all fish" in by_name["Fish"]["documentation"]
+    assert "not every fish is a herring" in by_name["Herring"]["documentation"]
+    assert "Danube river basin" in by_name["DanubeHerring"]["documentation"]
+
+
+@pytest.mark.asyncio
+async def test_fish_herring_attribute_documentation(parser, fish_herring_path):
+    """Attribute-level ownedComment documentation should be extracted."""
+    result = await parser.parse_xmi_file(str(fish_herring_path))
+    pkg = result["packages"][0]
+    by_name = {c["name"]: c for c in pkg["classes"]}
+
+    # Fish attributes
+    fish_attrs = {a["name"]: a for a in by_name["Fish"]["attributes"]}
+    assert "mouth, eyes, gills" in fish_attrs["head"]["documentation"]
+    assert "protective skin" in fish_attrs["scales"]["documentation"]
+    assert "locomotion" in fish_attrs["fins"]["documentation"]
+    assert "propulsion" in fish_attrs["tail"]["documentation"]
+
+    # Herring attribute
+    herring_attrs = {a["name"]: a for a in by_name["Herring"]["attributes"]}
+    assert "olfactory" in herring_attrs["herringSmell"]["documentation"]
+
+    # DanubeHerring attribute
+    danube_attrs = {a["name"]: a for a in by_name["DanubeHerring"]["attributes"]}
+    assert "iodine" in danube_attrs["iodineSmell"]["documentation"]
+
+
+@pytest.mark.asyncio
+async def test_fish_herring_type_resolution(parser, fish_herring_path):
+    """Attribute types using pathmap href should resolve to 'String'."""
+    result = await parser.parse_xmi_file(str(fish_herring_path))
+    pkg = result["packages"][0]
+    for cls in pkg["classes"]:
+        for attr in cls["attributes"]:
+            assert attr["type_name"] == "String"
+
+
+def test_extract_documentation_present():
+    """_extract_documentation should find body text from ownedComment."""
+    xml = '<cls><ownedComment body="Test docs."><annotatedElement/></ownedComment></cls>'
+    elem = ET.fromstring(xml)
+    assert _extract_documentation(elem) == "Test docs."
+
+
+def test_extract_documentation_absent():
+    """_extract_documentation should return empty string when no ownedComment."""
+    xml = "<cls><ownedAttribute name=\"x\"/></cls>"
+    elem = ET.fromstring(xml)
+    assert _extract_documentation(elem) == ""
+
+
+# --- IT Employment model (plain associations + documentation) ---
+
+
+@pytest.mark.asyncio
+async def test_it_employment_associations_count(parser, it_employment_path):
+    """Should parse 2 associations from IT Employment model."""
+    result = await parser.parse_xmi_file(str(it_employment_path))
+    assert len(result["associations"]) == 2
+
+
+@pytest.mark.asyncio
+async def test_it_employment_associations_aggregation(parser, it_employment_path):
+    """Both associations should have aggregation='none' (plain)."""
+    result = await parser.parse_xmi_file(str(it_employment_path))
+    for assoc in result["associations"]:
+        assert assoc["source"]["aggregation"] == "none"
+        assert assoc["target"]["aggregation"] == "none"
+
+
+@pytest.mark.asyncio
+async def test_it_employment_association_documentation(parser, it_employment_path):
+    """Association-level documentation should be extracted."""
+    result = await parser.parse_xmi_file(str(it_employment_path))
+    assoc_by_name = {a["name"]: a for a in result["associations"]}
+
+    assert "employs" in assoc_by_name
+    assert "Employment relationship" in assoc_by_name["employs"]["documentation"]
+
+    # contractsWith has no ownedComment
+    assert "contractsWith" in assoc_by_name
+    assert assoc_by_name["contractsWith"]["documentation"] == ""
+
+
+@pytest.mark.asyncio
+async def test_it_employment_association_roles(parser, it_employment_path):
+    """Association role names and type references should be captured."""
+    result = await parser.parse_xmi_file(str(it_employment_path))
+    employs = next(a for a in result["associations"] if a["name"] == "employs")
+
+    roles = {employs["source"]["role"], employs["target"]["role"]}
+    assert roles == {"employer", "employee"}
+
+    type_names = {employs["source"]["type_name"], employs["target"]["type_name"]}
+    assert type_names == {"Company", "ITProfessional"}
+
+
+@pytest.mark.asyncio
+async def test_it_employment_association_multiplicities(parser, it_employment_path):
+    """Association multiplicities should be parsed correctly."""
+    result = await parser.parse_xmi_file(str(it_employment_path))
+    contracts = next(a for a in result["associations"] if a["name"] == "contractsWith")
+
+    # contractor end: 0..1
+    contractor = next(
+        e for e in (contracts["source"], contracts["target"])
+        if e["role"] == "contractor"
+    )
+    assert contractor["multiplicity"]["lower"] == 0
+    assert contractor["multiplicity"]["upper"] == 1
+
+    # client end: 0..*
+    client = next(
+        e for e in (contracts["source"], contracts["target"])
+        if e["role"] == "client"
+    )
+    assert client["multiplicity"]["lower"] == 0
+    assert client["multiplicity"]["upper"] == -1

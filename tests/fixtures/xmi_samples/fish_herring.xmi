@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:thecustomprofile="http://www.sparxsystems.com/profiles/thecustomprofile/1.0">
+  <xmi:Documentation exporter="Sparx Systems Enterprise Architect" exporterVersion="15.2" exporterID="1555"/>
+  <uml:Model xmi:type="uml:Model" name="Fish Taxonomy" xmi:id="MODEL_001">
+    <packagedElement xmi:type="uml:Package" xmi:id="PKG_001" name="Fish Taxonomy" visibility="public">
+
+      <!-- CLASS: Fish (Рыба) -->
+      <packagedElement xmi:type="uml:Class" xmi:id="CLASS_FISH" name="Fish" visibility="public">
+        <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_FISH" body="Base class for all fish. Every fish is characterized by its physical structure.">
+          <annotatedElement xmi:idref="CLASS_FISH"/>
+        </ownedComment>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ATTR_HEAD" name="head" visibility="public">
+          <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_HEAD" body="Fish head — contains mouth, eyes, gills.">
+            <annotatedElement xmi:idref="ATTR_HEAD"/>
+          </ownedComment>
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ATTR_SCALES" name="scales" visibility="public">
+          <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_SCALES" body="Scales — protective skin covering.">
+            <annotatedElement xmi:idref="ATTR_SCALES"/>
+          </ownedComment>
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ATTR_FINS" name="fins" visibility="public">
+          <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_FINS" body="Fins — locomotion and stabilization organs.">
+            <annotatedElement xmi:idref="ATTR_FINS"/>
+          </ownedComment>
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ATTR_TAIL" name="tail" visibility="public">
+          <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_TAIL" body="Tail — primary propulsion organ.">
+            <annotatedElement xmi:idref="ATTR_TAIL"/>
+          </ownedComment>
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+
+      <!-- CLASS: Herring (Сельдь) — extends Fish -->
+      <packagedElement xmi:type="uml:Class" xmi:id="CLASS_HERRING" name="Herring" visibility="public">
+        <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_HERRING" body="Every herring is a fish, but not every fish is a herring. Herring is a specialisation of Fish with a distinctive olfactory signature.">
+          <annotatedElement xmi:idref="CLASS_HERRING"/>
+        </ownedComment>
+        <generalization xmi:type="uml:Generalization" xmi:id="GEN_HERRING_FISH" general="CLASS_FISH"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ATTR_HERRING_SMELL" name="herringSmell" visibility="public">
+          <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_HERRING_SMELL" body="Specific olfactory characteristic unique to herring. Absent in other fish species.">
+            <annotatedElement xmi:idref="ATTR_HERRING_SMELL"/>
+          </ownedComment>
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+
+      <!-- CLASS: DanubeHerring (Дунайская сельдь) — extends Herring -->
+      <packagedElement xmi:type="uml:Class" xmi:id="CLASS_DANUBE_HERRING" name="DanubeHerring" visibility="public">
+        <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_DANUBE" body="Danube Herring — further specialisation of Herring endemic to the Danube river basin. Carries all inherited fish and herring attributes plus a distinctive iodine note in its smell profile.">
+          <annotatedElement xmi:idref="CLASS_DANUBE_HERRING"/>
+        </ownedComment>
+        <generalization xmi:type="uml:Generalization" xmi:id="GEN_DANUBE_HERRING" general="CLASS_HERRING"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="ATTR_IODINE_SMELL" name="iodineSmell" visibility="public">
+          <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_IODINE" body="Additional iodine-specific olfactory note unique to Danube Herring. Reflects the mineral composition of Danube river waters.">
+            <annotatedElement xmi:idref="ATTR_IODINE_SMELL"/>
+          </ownedComment>
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+
+    </packagedElement>
+  </uml:Model>
+
+  <!-- EA Extension block — display properties for Sparx EA -->
+  <xmi:Extension extender="Enterprise Architect" extenderID="6.5">
+    <elements>
+      <element xmi:idref="CLASS_FISH" xmi:type="uml:Class" name="Fish" scope="public">
+        <model package="PKG_001" tpos="0" ea_eleType="Class" stereotype=""/>
+        <properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+        <style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLane=0;HSwimLane=0;BorderStyle=0;"/>
+        <extendedProperties tagged="0" package_name="Fish Taxonomy"/>
+        <attributes>
+          <attribute xmi:idref="ATTR_HEAD" name="head" scope="Public">
+            <initial/>
+            <documentation value="Fish head — contains mouth, eyes, gills."/>
+            <model ea_localid="1"/>
+            <properties type="String" derived="0" collection="false" duplicates="0" allowduplicates="0" ordered="0" static="0"/>
+            <style value=""/>
+            <coords DEFAULT="0,0,0,0"/>
+          </attribute>
+          <attribute xmi:idref="ATTR_SCALES" name="scales" scope="Public">
+            <initial/>
+            <documentation value="Scales — protective skin covering."/>
+            <model ea_localid="2"/>
+            <properties type="String" derived="0" collection="false" duplicates="0" allowduplicates="0" ordered="0" static="0"/>
+            <style value=""/>
+          </attribute>
+          <attribute xmi:idref="ATTR_FINS" name="fins" scope="Public">
+            <initial/>
+            <documentation value="Fins — locomotion and stabilization organs."/>
+            <model ea_localid="3"/>
+            <properties type="String" derived="0" collection="false" duplicates="0" allowduplicates="0" ordered="0" static="0"/>
+            <style value=""/>
+          </attribute>
+          <attribute xmi:idref="ATTR_TAIL" name="tail" scope="Public">
+            <initial/>
+            <documentation value="Tail — primary propulsion organ."/>
+            <model ea_localid="4"/>
+            <properties type="String" derived="0" collection="false" duplicates="0" allowduplicates="0" ordered="0" static="0"/>
+            <style value=""/>
+          </attribute>
+        </attributes>
+      </element>
+
+      <element xmi:idref="CLASS_HERRING" xmi:type="uml:Class" name="Herring" scope="public">
+        <model package="PKG_001" tpos="0" ea_eleType="Class" stereotype=""/>
+        <properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+        <style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLane=0;HSwimLane=0;BorderStyle=0;"/>
+        <extendedProperties tagged="0" package_name="Fish Taxonomy"/>
+        <attributes>
+          <attribute xmi:idref="ATTR_HERRING_SMELL" name="herringSmell" scope="Public">
+            <initial/>
+            <documentation value="Specific olfactory characteristic unique to herring. Absent in other fish species."/>
+            <model ea_localid="5"/>
+            <properties type="String" derived="0" collection="false" duplicates="0" allowduplicates="0" ordered="0" static="0"/>
+            <style value=""/>
+          </attribute>
+        </attributes>
+      </element>
+
+      <element xmi:idref="CLASS_DANUBE_HERRING" xmi:type="uml:Class" name="DanubeHerring" scope="public">
+        <model package="PKG_001" tpos="0" ea_eleType="Class" stereotype=""/>
+        <properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+        <style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLane=0;HSwimLane=0;BorderStyle=0;"/>
+        <extendedProperties tagged="0" package_name="Fish Taxonomy"/>
+        <attributes>
+          <attribute xmi:idref="ATTR_IODINE_SMELL" name="iodineSmell" scope="Public">
+            <initial/>
+            <documentation value="Additional iodine-specific olfactory note unique to Danube Herring. Reflects the mineral composition of Danube river waters."/>
+            <model ea_localid="6"/>
+            <properties type="String" derived="0" collection="false" duplicates="0" allowduplicates="0" ordered="0" static="0"/>
+            <style value=""/>
+          </attribute>
+        </attributes>
+      </element>
+    </elements>
+
+    <connectors>
+      <connector xmi:idref="GEN_HERRING_FISH">
+        <source xmi:idref="CLASS_HERRING"/>
+        <target xmi:idref="CLASS_FISH"/>
+        <model ea_localid="10" ea_type="Generalization"/>
+        <style value=""/>
+      </connector>
+      <connector xmi:idref="GEN_DANUBE_HERRING">
+        <source xmi:idref="CLASS_DANUBE_HERRING"/>
+        <target xmi:idref="CLASS_HERRING"/>
+        <model ea_localid="11" ea_type="Generalization"/>
+        <style value=""/>
+      </connector>
+    </connectors>
+
+  </xmi:Extension>
+</xmi:XMI>

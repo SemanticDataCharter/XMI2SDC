@@ -17,6 +17,7 @@ from xmi2sdc.common.audit import AuditLogger
 from xmi2sdc.common.cache import CacheManager
 from xmi2sdc.common.config import XMI2SDCConfig
 from xmi2sdc.common.exceptions import MappingError
+from xmi2sdc.common.inheritance import flatten_inheritance
 
 # Canonical UML primitive type names (case-insensitive matching)
 _BOOLEAN_TYPES = {"boolean", "bool"}
@@ -137,6 +138,9 @@ class SdcMapperToolset(BaseToolset):
         clusters: list[dict] = []
         unmapped: list[dict] = []
 
+        # Flatten inheritance before mapping
+        flatten_inheritance(parsed_model)
+
         # Build class lookup for association resolution
         all_classes = self._collect_all_classes(parsed_model)
         enum_map = self._build_enum_map(parsed_model)
@@ -152,13 +156,16 @@ class SdcMapperToolset(BaseToolset):
                 clusters.append({
                     "cluster_name": class_result["cluster_name"],
                     "source_xmi_id": class_result.get("source_xmi_id", ""),
+                    "description": class_result.get("description", ""),
                     "component_refs": class_result.get("component_refs", []),
                 })
 
-        # Map associations to cluster containment or semantic links
+        # Map associations to cluster containment or association clusters
         for assoc in parsed_model.get("associations", []):
             assoc_mapping = self._map_association(assoc, all_classes)
             if assoc_mapping:
+                assoc_components = assoc_mapping.pop("components", [])
+                components.extend(assoc_components)
                 clusters.append(assoc_mapping)
 
         result = {
@@ -278,7 +285,9 @@ class SdcMapperToolset(BaseToolset):
     def _map_single_class(self, cls: dict, enum_map: dict) -> dict:
         """Map a single class to SDC4 components or a cluster."""
         class_name = cls.get("name", "unknown")
-        attributes = cls.get("attributes", [])
+        # Use flattened attributes when available, fall back to own attributes
+        all_attrs = cls.get("all_attributes", [])
+        attributes = all_attrs if all_attrs else cls.get("attributes", [])
 
         # A class with attributes maps to individual SDC4 components
         # grouped in a Cluster
@@ -288,6 +297,7 @@ class SdcMapperToolset(BaseToolset):
                 "is_cluster": True,
                 "cluster_name": class_name,
                 "source_xmi_id": cls.get("xmi_id", ""),
+                "description": cls.get("documentation", ""),
                 "component_refs": [],
             }
 
@@ -299,6 +309,8 @@ class SdcMapperToolset(BaseToolset):
             type_name = attr.get("type_name", "String")
             mult = attr.get("multiplicity", {"lower": 1, "upper": 1})
 
+            doc = attr.get("documentation", "")
+
             # Check if type is an enumeration
             if type_name in enum_map:
                 comp = {
@@ -307,6 +319,7 @@ class SdcMapperToolset(BaseToolset):
                     "source_type": type_name,
                     "sdc4_type": "XdString",
                     "enumerations": enum_map[type_name],
+                    "description": doc,
                     "label": f"{class_name}.{attr_name}",
                     **_map_multiplicity(mult.get("lower", 1), mult.get("upper", 1)),
                 }
@@ -319,6 +332,7 @@ class SdcMapperToolset(BaseToolset):
                 "source_class": class_name,
                 "source_attribute": attr_name,
                 "source_type": type_name,
+                "description": doc,
                 "label": f"{class_name}.{attr_name}",
                 **type_mapping,
                 **_map_multiplicity(mult.get("lower", 1), mult.get("upper", 1)),
@@ -339,12 +353,84 @@ class SdcMapperToolset(BaseToolset):
         if components:
             result["cluster_name"] = class_name
             result["source_xmi_id"] = cls.get("xmi_id", "")
+            result["description"] = cls.get("documentation", "")
             result["component_refs"] = [c["label"] for c in components]
 
         return result
 
+    @staticmethod
+    def _format_multiplicity_str(mult: dict) -> str:
+        """Format a multiplicity dict as a human-readable string (e.g., '0..*')."""
+        lower = mult.get("lower", 1)
+        upper = mult.get("upper", 1)
+        lower_str = str(lower)
+        upper_str = "*" if upper == -1 else str(upper)
+        return f"{lower_str}..{upper_str}"
+
+    def _build_association_cluster(
+        self, assoc: dict, association_type: str
+    ) -> dict:
+        """Build a Cluster with XdString role components for a non-composition association.
+
+        Each association end becomes an XdString component capturing the role
+        name, type reference, and multiplicity.
+
+        Args:
+            assoc: Dict representation of a UmlAssociation.
+            association_type: Either 'plain' or 'shared'.
+
+        Returns:
+            Cluster dict with embedded components list.
+        """
+        assoc_name = assoc.get("name", "") or "unnamed_association"
+        documentation = assoc.get("documentation", "")
+
+        components: list[dict] = []
+        component_refs: list[str] = []
+
+        for end in (assoc.get("source", {}), assoc.get("target", {})):
+            role = end.get("role", "")
+            type_name = end.get("type_name", "")
+            mult = end.get("multiplicity", {"lower": 1, "upper": 1})
+            mult_str = self._format_multiplicity_str(mult)
+
+            label = f"{assoc_name}.{role}" if role else f"{assoc_name}.{type_name}"
+            description = f"Role '{role}' referencing {type_name} [{mult_str}]"
+
+            comp = {
+                "source_class": assoc_name,
+                "source_attribute": role or type_name,
+                "source_type": type_name,
+                "sdc4_type": "XdString",
+                "description": description,
+                "label": label,
+                "minOccurs": max(0, mult.get("lower", 1)),
+                "maxOccurs": mult.get("upper", 1) if mult.get("upper", 1) > 0 else 9999,
+                "is_list": mult.get("upper", 1) == -1 or mult.get("upper", 1) > 1,
+                "role_name": role,
+                "referenced_type": type_name,
+            }
+            components.append(comp)
+            component_refs.append(label)
+
+        return {
+            "is_cluster": True,
+            "cluster_name": assoc_name,
+            "source_xmi_id": assoc.get("xmi_id", ""),
+            "description": documentation,
+            "component_refs": component_refs,
+            "association_type": association_type,
+            "components": components,
+        }
+
     def _map_association(self, assoc: dict, all_classes: list[dict]) -> Optional[dict]:
-        """Map a UML association to an SDC4 cluster containment."""
+        """Map a UML association to an SDC4 cluster.
+
+        Three aggregation paths:
+        - composite → cluster containment (existing behavior)
+        - shared → association cluster with role components
+        - none (plain) → association cluster with role components
+        """
         source = assoc.get("source", {})
         target = assoc.get("target", {})
 
@@ -353,7 +439,6 @@ class SdcMapperToolset(BaseToolset):
 
         # Composition → cluster containment
         if source_agg == "composite" or target_agg == "composite":
-            # The composite end owns the other
             if source_agg == "composite":
                 owner_name = source.get("type_name", "")
                 contained_name = target.get("type_name", "")
@@ -369,5 +454,9 @@ class SdcMapperToolset(BaseToolset):
                 "containment_type": "composition",
             }
 
-        # Aggregation or plain association — semantic link (Phase 3)
-        return None
+        # Shared aggregation → association cluster
+        if source_agg == "shared" or target_agg == "shared":
+            return self._build_association_cluster(assoc, "shared")
+
+        # Plain association (aggregation=none on both ends)
+        return self._build_association_cluster(assoc, "plain")

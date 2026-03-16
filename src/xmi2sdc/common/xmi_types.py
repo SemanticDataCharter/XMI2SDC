@@ -86,6 +86,8 @@ class UmlClass(BaseModel):
     parent_xmi_ids: list[str] = Field(default_factory=list)
     documentation: str = ""
     stereotype: str = ""
+    all_attributes: list[UmlAttribute] = Field(default_factory=list)
+    ancestor_xmi_ids: list[str] = Field(default_factory=list)
 
 
 class UmlPackage(BaseModel):

@@ -176,6 +176,21 @@ def _parse_multiplicity(elem: ET.Element) -> Multiplicity:
     return Multiplicity(lower=lower, upper=upper)
 
 
+def _extract_documentation(elem: ET.Element) -> str:
+    """Extract documentation from ownedComment child elements.
+
+    Handles both UML model ownedComment (body attribute) and
+    EA Extension documentation (value attribute).
+    """
+    for child in elem:
+        tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+        if tag == "ownedComment":
+            body = child.get("body", "")
+            if body:
+                return body
+    return ""
+
+
 def _parse_attribute(elem: ET.Element, type_map: dict[str, str]) -> UmlAttribute:
     """Parse a UML attribute (ownedAttribute with no association)."""
     name = elem.get("name", "")
@@ -219,6 +234,9 @@ def _parse_attribute(elem: ET.Element, type_map: dict[str, str]) -> UmlAttribute
     # Check isID
     is_id = elem.get("isID", "false").lower() == "true"
 
+    # Extract documentation from ownedComment
+    documentation = _extract_documentation(elem)
+
     return UmlAttribute(
         name=name,
         type_name=type_name,
@@ -226,6 +244,7 @@ def _parse_attribute(elem: ET.Element, type_map: dict[str, str]) -> UmlAttribute
         is_id=is_id,
         default_value=default_value,
         visibility=visibility,
+        documentation=documentation,
     )
 
 
@@ -233,6 +252,7 @@ def _parse_enum(elem: ET.Element) -> UmlEnumeration:
     """Parse a UML enumeration from an element."""
     xmi_id = _get_xmi_id(elem)
     name = elem.get("name", "")
+    documentation = _extract_documentation(elem)
 
     literals: list[UmlEnumLiteral] = []
     for child in elem:
@@ -240,9 +260,10 @@ def _parse_enum(elem: ET.Element) -> UmlEnumeration:
         if tag == "ownedLiteral":
             lit_name = child.get("name", "")
             if lit_name:
-                literals.append(UmlEnumLiteral(name=lit_name))
+                lit_doc = _extract_documentation(child)
+                literals.append(UmlEnumLiteral(name=lit_name, documentation=lit_doc))
 
-    return UmlEnumeration(xmi_id=xmi_id, name=name, literals=literals)
+    return UmlEnumeration(xmi_id=xmi_id, name=name, literals=literals, documentation=documentation)
 
 
 def _build_type_map(root: ET.Element) -> dict[str, str]:
@@ -276,6 +297,9 @@ def _parse_class(elem: ET.Element, type_map: dict[str, str]) -> UmlClass:
     attributes: list[UmlAttribute] = []
     parent_xmi_ids: list[str] = []
 
+    # Extract class-level documentation
+    documentation = _extract_documentation(elem)
+
     for child in elem:
         tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
 
@@ -296,6 +320,7 @@ def _parse_class(elem: ET.Element, type_map: dict[str, str]) -> UmlClass:
         is_abstract=is_abstract,
         attributes=attributes,
         parent_xmi_ids=parent_xmi_ids,
+        documentation=documentation,
     )
 
 
@@ -392,11 +417,14 @@ def _parse_association(
     if len(ends) < 2:
         return None
 
+    documentation = _extract_documentation(elem)
+
     return UmlAssociation(
         xmi_id=xmi_id,
         name=name,
         source=ends[0],
         target=ends[1],
+        documentation=documentation,
     )
 
 

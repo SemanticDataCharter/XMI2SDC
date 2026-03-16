@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001"
+         xmi:version="2.1">
+  <uml:Model xmi:type="uml:Model" xmi:id="model_1" name="ITEmployment">
+    <!-- Class: ITProfessional (no attributes — empty class) -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_itpro" name="ITProfessional">
+      <ownedComment body="A professional working in the IT industry."/>
+    </packagedElement>
+
+    <!-- Class: Company (no attributes — empty class) -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_company" name="Company">
+      <ownedComment body="An employer organization."/>
+    </packagedElement>
+
+    <!-- Association: employs (plain, Company employs ITProfessional) -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_employs" name="employs">
+      <ownedComment body="Employment relationship between company and IT professional."/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_employer" name="employer" type="cls_company" aggregation="none">
+        <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+      </ownedEnd>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_employee" name="employee" type="cls_itpro" aggregation="none">
+        <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+      </ownedEnd>
+    </packagedElement>
+
+    <!-- Association: contractsWith (plain, ITProfessional contracts with Company) -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_contracts" name="contractsWith">
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_contractor" name="contractor" type="cls_itpro" aggregation="none">
+        <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_client" name="client" type="cls_company" aggregation="none">
+        <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+      </ownedEnd>
+    </packagedElement>
+
+    <!-- Primitive type stubs -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_string" name="String"/>
+  </uml:Model>
+</xmi:XMI>
