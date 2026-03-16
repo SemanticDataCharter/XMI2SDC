@@ -7,7 +7,7 @@ name = "xmi2sdc"
 version = "4.0.0"
 description = "Agentic XMI/UML to SDC4 data model converter"
 readme = "README.md"
-license = "LicenseRef-Proprietary"
+license = {text = "Proprietary"}
 requires-python = ">=3.11"
 authors = [
     { name = "Timothy W. Cook", email = "tim@semanticdatacharter.org" },
@@ -57,6 +57,13 @@ select = ["E", "F", "I", "W"]
 line-length = 99
 target-version = ["py311"]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-asyncio_mode = "auto"
+[tool.coverage.run]
+source = ["src/xmi2sdc"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.",
+    "if TYPE_CHECKING:",
+]

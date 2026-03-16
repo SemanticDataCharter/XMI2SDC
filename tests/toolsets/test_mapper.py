@@ -12,7 +12,6 @@ from xmi2sdc.toolsets.mapper import (
     _normalize_type_name,
 )
 
-
 # --- Primitive type mapping ---
 
 
@@ -216,8 +215,11 @@ async def test_map_model_with_enumerations(mapper):
                 "xmi_id": "c1",
                 "name": "Record",
                 "attributes": [
-                    {"name": "status", "type_name": "Status",
-                     "multiplicity": {"lower": 1, "upper": 1}},
+                    {
+                        "name": "status",
+                        "type_name": "Status",
+                        "multiplicity": {"lower": 1, "upper": 1},
+                    },
                 ],
             }
         ],
@@ -278,9 +280,7 @@ async def test_map_model_associations(mapper):
     clusters = mapping["clusters"]
 
     assert len(clusters) >= 1
-    comp_cluster = next(
-        (c for c in clusters if c.get("containment_type") == "composition"), None
-    )
+    comp_cluster = next((c for c in clusters if c.get("containment_type") == "composition"), None)
     assert comp_cluster is not None
     assert comp_cluster["cluster_name"] == "Company"
 
@@ -320,11 +320,13 @@ async def test_map_model_fish_herring(mapper, fish_herring_path):
     # Fish: 4 own attributes → 4 components
     assert cluster_map.get("Fish") == 4, f"Fish: expected 4, got {cluster_map.get('Fish')}"
     # Herring: 4 inherited + 1 own → 5 components
-    assert cluster_map.get("Herring") == 5, f"Herring: expected 5, got {cluster_map.get('Herring')}"
+    assert (
+        cluster_map.get("Herring") == 5
+    ), f"Herring: expected 5, got {cluster_map.get('Herring')}"
     # DanubeHerring: 5 inherited + 1 own → 6 components
-    assert cluster_map.get("DanubeHerring") == 6, (
-        f"DanubeHerring: expected 6, got {cluster_map.get('DanubeHerring')}"
-    )
+    assert (
+        cluster_map.get("DanubeHerring") == 6
+    ), f"DanubeHerring: expected 6, got {cluster_map.get('DanubeHerring')}"
 
 
 @pytest.mark.asyncio

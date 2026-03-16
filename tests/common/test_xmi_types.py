@@ -5,7 +5,6 @@ from __future__ import annotations
 from xmi2sdc.common.xmi_types import (
     Multiplicity,
     ParsedXmiModel,
-    UmlAssociation,
     UmlAttribute,
     UmlClass,
     UmlEnumeration,

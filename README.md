@@ -1,5 +1,9 @@
 # XMI2SDC
 
+[![CI](https://github.com/Axius-SDC/XMI2SDC/actions/workflows/ci.yml/badge.svg)](https://github.com/Axius-SDC/XMI2SDC/actions/workflows/ci.yml)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
+![License: Proprietary](https://img.shields.io/badge/license-Proprietary-red)
+
 ![XMI2SDC — Agentic XMI/UML to SDC4 Converter](images/XMI2SDC_Hero.png)
 
 Agentic XMI/UML to SDC4 data model converter.
@@ -130,11 +134,30 @@ docker run -v $(pwd)/xmi2sdc.yaml:/home/sdc/xmi2sdc.yaml:ro \
     xmi2sdc info
 ```
 
-## Testing
+## Development
+
+### Branch Workflow
+
+- **`main`**: Production code (protected, PR required)
+- **`dev`**: Active development
+
+All work happens on `dev`. Create a Pull Request to merge into `main`.
+
+### Testing
 
 ```bash
 pip install -e ".[dev]"
 pytest
+
+# With coverage
+pytest --cov=xmi2sdc --cov-report=term-missing
+```
+
+### Linting
+
+```bash
+ruff check src/ tests/
+black --check src/ tests/
 ```
 
 ## Architecture
@@ -148,8 +171,20 @@ XMI File ──> Parser Agent ──> ParsedXmiModel ──> Mapper Agent ──
 
 The pipeline separates **deterministic** operations (parsing, type mapping) from **LLM-assisted** operations (semantic analysis, edge-case resolution). If any stage fails, earlier results are cached and the pipeline can resume without re-processing.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines and contribution workflow.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for the security policy and vulnerability reporting process.
+
+## Related Projects
+
+- [SDCStudio](https://github.com/Axius-SDC/SDCStudio) — SDC4 data model platform (Assembly API provider)
+- [SDC Agents](https://github.com/SemanticDataCharter/SDC_Agents) — Runtime agent suite for SDC4 workflows
+- [sdcvalidator](https://github.com/SemanticDataCharter/sdcvalidator) — SDC4 schema validation library
+
 ## License
 
-Proprietary. All rights reserved.
-
-Copyright 2026 Axius SDC, LLC.
+Proprietary. Copyright 2026 Axius SDC, Inc. All rights reserved. See [LICENSE](LICENSE).
