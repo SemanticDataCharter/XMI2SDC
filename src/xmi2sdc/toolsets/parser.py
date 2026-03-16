@@ -18,7 +18,7 @@ from google.adk.tools.base_toolset import BaseToolset
 from xmi2sdc.common.audit import AuditLogger
 from xmi2sdc.common.cache import CacheManager
 from xmi2sdc.common.config import XMI2SDCConfig
-from xmi2sdc.common.exceptions import DialectDetectionError, XmiParseError
+from xmi2sdc.common.exceptions import XmiParseError
 from xmi2sdc.common.xmi_types import (
     Multiplicity,
     ParsedXmiModel,
@@ -338,9 +338,7 @@ def _build_element_index(root: ET.Element) -> dict[str, ET.Element]:
     return index
 
 
-def _parse_association_end(
-    elem: ET.Element, type_map: dict[str, str]
-) -> UmlAssociationEnd:
+def _parse_association_end(elem: ET.Element, type_map: dict[str, str]) -> UmlAssociationEnd:
     """Parse a single association end from an element (ownedEnd or ownedAttribute)."""
     role = elem.get("name", "")
     aggregation = elem.get("aggregation", "none")
@@ -491,9 +489,7 @@ def _parse_package(
                 classes.append(cls)
                 # Recursively collect nested class-like elements
                 # (EA BPMN models nest Activities inside Activities)
-                _collect_nested_classes(
-                    child, type_map, classes, element_index, associations_out
-                )
+                _collect_nested_classes(child, type_map, classes, element_index, associations_out)
             elif xmi_type.endswith("Enumeration"):
                 enumerations.append(_parse_enum(child))
             elif xmi_type.endswith("Package"):
@@ -561,15 +557,11 @@ def _parse_generic_xmi(root: ET.Element, model_name: str) -> ParsedXmiModel:
 
         if tag == "packagedElement" or tag == "ownedMember":
             if xmi_type.endswith("Package"):
-                packages.append(
-                    _parse_package(child, type_map, element_index, associations)
-                )
+                packages.append(_parse_package(child, type_map, element_index, associations))
             elif _is_class_like(xmi_type):
                 top_classes.append(_parse_class(child, type_map))
                 # Collect nested class-like elements (BPMN Activities)
-                _collect_nested_classes(
-                    child, type_map, top_classes, element_index, associations
-                )
+                _collect_nested_classes(child, type_map, top_classes, element_index, associations)
             elif xmi_type.endswith("Enumeration"):
                 top_enums.append(_parse_enum(child))
             elif xmi_type.endswith("Association"):

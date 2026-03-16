@@ -272,7 +272,8 @@ async def _run_convert(config, xmi_file: str, model_name: str | None, output: st
     if output:
         out_path = Path(output)
     else:
-        out_path = Path(config.output.directory) / f"{parsed.get('model_name', 'model')}_mapping.json"
+        model_name = parsed.get("model_name", "model")
+        out_path = Path(config.output.directory) / f"{model_name}_mapping.json"
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
     out_path.write_text(json.dumps(mapping, indent=2))

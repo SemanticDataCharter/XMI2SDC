@@ -2,23 +2,20 @@
 
 from __future__ import annotations
 
+import xml.etree.ElementTree as ET
+
 import pytest
 
 from xmi2sdc.common.config import XMI2SDCConfig
 from xmi2sdc.common.exceptions import XmiParseError
+from xmi2sdc.common.xmi_types import XmiDialect
 from xmi2sdc.toolsets.parser import (
     XmiParserToolset,
-    _build_element_index,
     _detect_dialect,
     _detect_xmi_version,
     _extract_documentation,
-    _parse_association,
-    _parse_generic_xmi,
     _parse_multiplicity_value,
 )
-from xmi2sdc.common.xmi_types import XmiDialect
-import xml.etree.ElementTree as ET
-
 
 # --- Dialect Detection ---
 
@@ -174,7 +171,7 @@ async def test_detect_dialect_tool(parser, generic_xmi_path):
 @pytest.mark.asyncio
 async def test_parse_caches_result(parser, generic_xmi_path, tmp_path):
     """Parsed result should be cached to disk."""
-    result = await parser.parse_xmi_file(str(generic_xmi_path))
+    await parser.parse_xmi_file(str(generic_xmi_path))
     cache_path = tmp_path / "cache" / "parsed" / "generic_xmi21.json"
     assert cache_path.is_file()
 
@@ -285,9 +282,9 @@ async def test_parse_ea_taxonomy_associations(parser, sparx_ea_taxonomy_path):
     for assoc in associations:
         src_agg = assoc["source"]["aggregation"]
         tgt_agg = assoc["target"]["aggregation"]
-        assert src_agg == "composite" or tgt_agg == "composite", (
-            f"Association should be composition: {assoc}"
-        )
+        assert (
+            src_agg == "composite" or tgt_agg == "composite"
+        ), f"Association should be composition: {assoc}"
 
 
 @pytest.mark.asyncio
@@ -322,7 +319,9 @@ async def test_parse_ea_taxonomy_composition_hierarchy(parser, sparx_ea_taxonomy
 
     assert cat_children is not None, f"Category 1.0 not found as parent. Hierarchy: {hierarchy}"
     assert len(cat_children) == 2
-    assert pg_children is not None, f"Process Group 1.1 not found as parent. Hierarchy: {hierarchy}"
+    assert (
+        pg_children is not None
+    ), f"Process Group 1.1 not found as parent. Hierarchy: {hierarchy}"
     assert len(pg_children) == 2
 
 
@@ -463,7 +462,7 @@ def test_extract_documentation_present():
 
 def test_extract_documentation_absent():
     """_extract_documentation should return empty string when no ownedComment."""
-    xml = "<cls><ownedAttribute name=\"x\"/></cls>"
+    xml = '<cls><ownedAttribute name="x"/></cls>'
     elem = ET.fromstring(xml)
     assert _extract_documentation(elem) == ""
 
@@ -522,16 +521,12 @@ async def test_it_employment_association_multiplicities(parser, it_employment_pa
 
     # contractor end: 0..1
     contractor = next(
-        e for e in (contracts["source"], contracts["target"])
-        if e["role"] == "contractor"
+        e for e in (contracts["source"], contracts["target"]) if e["role"] == "contractor"
     )
     assert contractor["multiplicity"]["lower"] == 0
     assert contractor["multiplicity"]["upper"] == 1
 
     # client end: 0..*
-    client = next(
-        e for e in (contracts["source"], contracts["target"])
-        if e["role"] == "client"
-    )
+    client = next(e for e in (contracts["source"], contracts["target"]) if e["role"] == "client")
     assert client["multiplicity"]["lower"] == 0
     assert client["multiplicity"]["upper"] == -1

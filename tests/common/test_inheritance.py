@@ -22,14 +22,26 @@ def _make_fish_model() -> dict:
                         "name": "Fish",
                         "parent_xmi_ids": [],
                         "attributes": [
-                            {"name": "head", "type_name": "String",
-                             "documentation": "Fish head — contains mouth, eyes, gills."},
-                            {"name": "scales", "type_name": "String",
-                             "documentation": "Scales — protective skin covering."},
-                            {"name": "fins", "type_name": "String",
-                             "documentation": "Fins — locomotion and stabilization organs."},
-                            {"name": "tail", "type_name": "String",
-                             "documentation": "Tail — primary propulsion organ."},
+                            {
+                                "name": "head",
+                                "type_name": "String",
+                                "documentation": "Fish head — contains mouth, eyes, gills.",
+                            },
+                            {
+                                "name": "scales",
+                                "type_name": "String",
+                                "documentation": "Scales — protective skin covering.",
+                            },
+                            {
+                                "name": "fins",
+                                "type_name": "String",
+                                "documentation": "Fins — locomotion and stabilization organs.",
+                            },
+                            {
+                                "name": "tail",
+                                "type_name": "String",
+                                "documentation": "Tail — primary propulsion organ.",
+                            },
                         ],
                     },
                     {
@@ -37,8 +49,13 @@ def _make_fish_model() -> dict:
                         "name": "Herring",
                         "parent_xmi_ids": ["CLASS_FISH"],
                         "attributes": [
-                            {"name": "herringSmell", "type_name": "String",
-                             "documentation": "Specific olfactory characteristic unique to herring."},
+                            {
+                                "name": "herringSmell",
+                                "type_name": "String",
+                                "documentation": (
+                                    "Specific olfactory characteristic unique to herring."
+                                ),
+                            },
                         ],
                     },
                     {
@@ -46,8 +63,13 @@ def _make_fish_model() -> dict:
                         "name": "DanubeHerring",
                         "parent_xmi_ids": ["CLASS_HERRING"],
                         "attributes": [
-                            {"name": "iodineSmell", "type_name": "String",
-                             "documentation": "Iodine-specific olfactory note unique to Danube Herring."},
+                            {
+                                "name": "iodineSmell",
+                                "type_name": "String",
+                                "documentation": (
+                                    "Iodine-specific olfactory note unique to Danube Herring."
+                                ),
+                            },
                         ],
                     },
                 ],
@@ -71,7 +93,10 @@ class TestFlattenInheritance:
         assert fish["name"] == "Fish"
         assert len(fish["all_attributes"]) == 4
         assert [a["name"] for a in fish["all_attributes"]] == [
-            "head", "scales", "fins", "tail",
+            "head",
+            "scales",
+            "fins",
+            "tail",
         ]
 
     def test_fish_has_no_ancestors(self):
@@ -104,7 +129,12 @@ class TestFlattenInheritance:
         assert len(danube["all_attributes"]) == 6
         names = [a["name"] for a in danube["all_attributes"]]
         assert names == [
-            "head", "scales", "fins", "tail", "herringSmell", "iodineSmell",
+            "head",
+            "scales",
+            "fins",
+            "tail",
+            "herringSmell",
+            "iodineSmell",
         ]
 
     def test_danube_herring_ancestors(self):
@@ -144,7 +174,11 @@ class TestFlattenInheritance:
                     "name": "Child",
                     "parent_xmi_ids": ["PARENT"],
                     "attributes": [
-                        {"name": "color", "type_name": "String", "documentation": "child color override"},
+                        {
+                            "name": "color",
+                            "type_name": "String",
+                            "documentation": "child color override",
+                        },
                     ],
                 },
             ],

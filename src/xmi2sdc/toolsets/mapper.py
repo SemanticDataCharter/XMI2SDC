@@ -16,18 +16,33 @@ from google.adk.tools.base_toolset import BaseToolset
 from xmi2sdc.common.audit import AuditLogger
 from xmi2sdc.common.cache import CacheManager
 from xmi2sdc.common.config import XMI2SDCConfig
-from xmi2sdc.common.exceptions import MappingError
 from xmi2sdc.common.inheritance import flatten_inheritance
 
 # Canonical UML primitive type names (case-insensitive matching)
 _BOOLEAN_TYPES = {"boolean", "bool"}
 _INTEGER_TYPES = {"integer", "int", "long", "short", "byte", "unsignedint", "positiveinteger"}
-_UNSIGNED_INTEGER_TYPES = {"unsignedint", "unsignedlong", "unsignedshort", "unsignedbyte",
-                           "nonnegativeinteger", "positiveinteger", "natural"}
+_UNSIGNED_INTEGER_TYPES = {
+    "unsignedint",
+    "unsignedlong",
+    "unsignedshort",
+    "unsignedbyte",
+    "nonnegativeinteger",
+    "positiveinteger",
+    "natural",
+}
 _REAL_TYPES = {"real", "float", "double", "decimal", "number"}
 _STRING_TYPES = {"string", "char", "text", "name", "token", "uri", "url", "id"}
-_TEMPORAL_TYPES = {"date", "datetime", "time", "timestamp", "instant", "duration",
-                   "localdate", "localtime", "localdatetime"}
+_TEMPORAL_TYPES = {
+    "date",
+    "datetime",
+    "time",
+    "timestamp",
+    "instant",
+    "duration",
+    "localdate",
+    "localtime",
+    "localdatetime",
+}
 
 
 def _normalize_type_name(type_name: str) -> str:
@@ -153,12 +168,14 @@ class SdcMapperToolset(BaseToolset):
             unmapped.extend(class_result.get("unmapped", []))
             # Add cluster definition if class has components
             if class_result.get("is_cluster") and class_result.get("cluster_name"):
-                clusters.append({
-                    "cluster_name": class_result["cluster_name"],
-                    "source_xmi_id": class_result.get("source_xmi_id", ""),
-                    "description": class_result.get("description", ""),
-                    "component_refs": class_result.get("component_refs", []),
-                })
+                clusters.append(
+                    {
+                        "cluster_name": class_result["cluster_name"],
+                        "source_xmi_id": class_result.get("source_xmi_id", ""),
+                        "description": class_result.get("description", ""),
+                        "component_refs": class_result.get("component_refs", []),
+                    }
+                )
 
         # Map associations to cluster containment or association clusters
         for assoc in parsed_model.get("associations", []):
@@ -367,9 +384,7 @@ class SdcMapperToolset(BaseToolset):
         upper_str = "*" if upper == -1 else str(upper)
         return f"{lower_str}..{upper_str}"
 
-    def _build_association_cluster(
-        self, assoc: dict, association_type: str
-    ) -> dict:
+    def _build_association_cluster(self, assoc: dict, association_type: str) -> dict:
         """Build a Cluster with XdString role components for a non-composition association.
 
         Each association end becomes an XdString component capturing the role
