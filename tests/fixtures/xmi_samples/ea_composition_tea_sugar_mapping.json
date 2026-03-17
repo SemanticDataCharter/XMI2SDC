@@ -1,0 +1,36 @@
+{
+  "model_name": "ea_composition_tea_sugar",
+  "dialect": "sparx_ea",
+  "components": [],
+  "clusters": [
+    {
+      "cluster_name": "SugarPortion",
+      "source_xmi_id": "EAID_5D390296_E1FA_4B96_877C_22B7C8FB3D54",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "TeaPortion",
+      "source_xmi_id": "EAID_A5DB85F4_FEE9_40D5_BE7B_F0B0EB9FBCFB",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "TeaPortion",
+      "source_xmi_id": "EAID_FA265AE3_F45C_40E0_848A_B95526948A63",
+      "description": "Reading: Component(s).SugarPortion -[is dissolved in]-&gt; TeaPortion.Whole.\n\nSugarPortion end \u2014 role: Component, multiplicity 0..1\n(a TeaPortion contains at most one SugarPortion (1) \u2014\nwe model a single dissolved serving, not granules \u2014\nbut unsweetened tea is perfectly valid, hence the lower bound of 0.)\n\nTeaPortion end \u2014 role: Composite, multiplicity 1 (default, not shown)\n(a dissolved SugarPortion belongs to exactly one TeaPortion.\nOnce dissolved, it cannot exist independently.)\n\nComposition semantics (filled diamond):\nThis is a composite aggregation \u2014 the strongest ownership in UML.\nThe SugarPortion cannot exist independently of the TeaPortion\nonce it has been dissolved:\ndrinking the tea means consuming the sugar along with it.\nThere is no natural way to separate the sugar back out \u2014\nyou would have to discard the entire TeaPortion.\nA dissolved SugarPortion may belong to at most one TeaPortion\nat any point in time.\n\nNote: in a later extension of this model, TeaPortion will be\naggregated (hollow diamond, shared) into a GlassOfTea,\nbecause tea can be poured into a different glass,\nor split across two glasses to cool faster.\nThat relationship will be modelled as aggregation, not composition.\n\nDirection of reading is shown on the diagram by a filled triangle\nnext to the association name label.\nThe association direction itself is Unspecified.",
+      "component_refs": [
+        "SugarPortion"
+      ],
+      "containment_type": "composition"
+    }
+  ],
+  "unmapped": [],
+  "summary": {
+    "total_classes": 2,
+    "total_components": 0,
+    "total_clusters": 3,
+    "total_unmapped": 0
+  }
+}

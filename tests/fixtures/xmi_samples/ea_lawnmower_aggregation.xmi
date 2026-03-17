@@ -1,0 +1,194 @@
+<?xml  version='1.0' encoding='windows-1252' ?>
+<xmi:XMI xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1">
+	<xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5" exporterID="1716"/>
+	<uml:Model xmi:type="uml:Model" name="EA_Model" visibility="public">
+		<packagedElement xmi:type="uml:Package" xmi:id="EAPK_2DB313D6_A424_4629_B209_F73E77B0FB94" name="UML_Aggregation_LawnMower" visibility="public">
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_EBA50B28_EE53_4FF2_B4B9_8DCEF7339FED" name="Belt" visibility="public"/>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_8177BB0D_01EF_483D_8FD2_5EE3E1D2B145" name="is part of" visibility="public">
+				<memberEnd xmi:idref="EAID_dst77BB0D_01EF_483D_8FD2_5EE3E1D2B145"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dst77BB0D_01EF_483D_8FD2_5EE3E1D2B145" name="Aggregate" visibility="public" association="EAID_8177BB0D_01EF_483D_8FD2_5EE3E1D2B145" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000001__01EF_483D_8FD2_5EE3E1D2B145" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000002__01EF_483D_8FD2_5EE3E1D2B145" value="1"/>
+				</ownedEnd>
+				<memberEnd xmi:idref="EAID_src77BB0D_01EF_483D_8FD2_5EE3E1D2B145"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_src77BB0D_01EF_483D_8FD2_5EE3E1D2B145" name="Part" visibility="public" association="EAID_8177BB0D_01EF_483D_8FD2_5EE3E1D2B145" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="shared">
+					<type xmi:idref="EAID_EBA50B28_EE53_4FF2_B4B9_8DCEF7339FED"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000005__01EF_483D_8FD2_5EE3E1D2B145" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000006__01EF_483D_8FD2_5EE3E1D2B145" value="2"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_770BE2F0_B7E3_4C69_BF3F_7E6E71B6A7BB" name="Blade" visibility="public"/>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_B21F742F_5078_44E1_A629_0F6CBC27D3E0" name="is part of" visibility="public">
+				<memberEnd xmi:idref="EAID_dst1F742F_5078_44E1_A629_0F6CBC27D3E0"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dst1F742F_5078_44E1_A629_0F6CBC27D3E0" name="Aggregate" visibility="public" association="EAID_B21F742F_5078_44E1_A629_0F6CBC27D3E0" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000003__5078_44E1_A629_0F6CBC27D3E0" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000004__5078_44E1_A629_0F6CBC27D3E0" value="1"/>
+				</ownedEnd>
+				<memberEnd xmi:idref="EAID_src1F742F_5078_44E1_A629_0F6CBC27D3E0"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_src1F742F_5078_44E1_A629_0F6CBC27D3E0" name="Part" visibility="public" association="EAID_B21F742F_5078_44E1_A629_0F6CBC27D3E0" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="shared">
+					<type xmi:idref="EAID_770BE2F0_B7E3_4C69_BF3F_7E6E71B6A7BB"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000007__5078_44E1_A629_0F6CBC27D3E0" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000008__5078_44E1_A629_0F6CBC27D3E0" value="2"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E" name="LawnMower" visibility="public"/>
+		</packagedElement>
+	</uml:Model>
+	<xmi:Extension extender="Enterprise Architect" extenderID="6.5">
+		<elements>
+			<element xmi:idref="EAPK_2DB313D6_A424_4629_B209_F73E77B0FB94" xmi:type="uml:Package" name="UML_Aggregation_LawnMower" scope="public">
+				<model package2="EAID_2DB313D6_A424_4629_B209_F73E77B0FB94" package="EAPK_62F7F2D0_5402_4e31_8A22_93B98A809F99" tpos="0" ea_localid="22" ea_eleType="package"/>
+				<properties isSpecification="false" sType="Package" nType="0" scope="public"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 16:19:01" modified="2026-03-17 08:46:58" complexity="1" status="Proposed"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="Model"/>
+				<packageproperties version="1.0" tpos="0"/>
+				<paths/>
+				<times created="2026-03-16 16:19:01" modified="2026-03-17 08:46:58"/>
+				<flags iscontrolled="0" isprotected="0" batchsave="0" batchload="0" usedtd="0" logxml="0"/>
+			</element>
+			<element xmi:idref="EAID_EBA50B28_EE53_4FF2_B4B9_8DCEF7339FED" xmi:type="uml:Class" name="Belt" scope="public">
+				<model package="EAPK_2DB313D6_A424_4629_B209_F73E77B0FB94" tpos="0" ea_localid="8671" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 16:19:01" modified="2026-03-16 16:19:01"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_Aggregation_LawnMower"/>
+				<links>
+					<Association xmi:id="EAID_8177BB0D_01EF_483D_8FD2_5EE3E1D2B145" start="EAID_EBA50B28_EE53_4FF2_B4B9_8DCEF7339FED" end="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E"/>
+				</links>
+			</element>
+			<element xmi:idref="EAID_770BE2F0_B7E3_4C69_BF3F_7E6E71B6A7BB" xmi:type="uml:Class" name="Blade" scope="public">
+				<model package="EAPK_2DB313D6_A424_4629_B209_F73E77B0FB94" tpos="0" ea_localid="8672" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 16:19:01" modified="2026-03-16 16:19:01"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_Aggregation_LawnMower"/>
+				<links>
+					<Association xmi:id="EAID_B21F742F_5078_44E1_A629_0F6CBC27D3E0" start="EAID_770BE2F0_B7E3_4C69_BF3F_7E6E71B6A7BB" end="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E"/>
+				</links>
+			</element>
+			<element xmi:idref="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E" xmi:type="uml:Class" name="LawnMower" scope="public">
+				<model package="EAPK_2DB313D6_A424_4629_B209_F73E77B0FB94" tpos="0" ea_localid="8670" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 16:19:01" modified="2026-03-16 16:19:01"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_Aggregation_LawnMower"/>
+				<links>
+					<Association xmi:id="EAID_8177BB0D_01EF_483D_8FD2_5EE3E1D2B145" start="EAID_EBA50B28_EE53_4FF2_B4B9_8DCEF7339FED" end="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E"/>
+					<Association xmi:id="EAID_B21F742F_5078_44E1_A629_0F6CBC27D3E0" start="EAID_770BE2F0_B7E3_4C69_BF3F_7E6E71B6A7BB" end="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E"/>
+				</links>
+			</element>
+		</elements>
+		<connectors>
+			<connector xmi:idref="EAID_8177BB0D_01EF_483D_8FD2_5EE3E1D2B145" name="is part of">
+				<source xmi:idref="EAID_EBA50B28_EE53_4FF2_B4B9_8DCEF7339FED">
+					<model ea_localid="8671" type="Class" name="Belt"/>
+					<role name="Part" visibility="Public"/>
+					<type multiplicity="0..2" aggregation="none"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E">
+					<model ea_localid="8670" type="Class" name="LawnMower"/>
+					<role name="Aggregate" visibility="Public"/>
+					<type multiplicity="0..1" aggregation="shared"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6912"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: Part(s).Belt -[is part of]-&gt; LawnMower(s).Aggregate.&#xA;&#xA;Belt end — role: Part, multiplicity 0..2&#xA;(a LawnMower may have no belt fitted at all — e.g. during maintenance (0),&#xA;one belt on a single-deck mower (1),&#xA;or two belts on a dual-deck mower (2).&#xA;The upper bound of 2 reflects the maximum of two cutting decks&#xA;a typical mower configuration supports.)&#xA;&#xA;LawnMower end — role: Aggregate, multiplicity 0..1&#xA;(a Belt either belongs to exactly one LawnMower (1),&#xA;or exists independently — stored as a spare part in the barn,&#xA;awaiting installation, or just delivered from Amazon (0).)&#xA;&#xA;Aggregation semantics:&#xA;This is a shared aggregation (hollow diamond), not composition.&#xA;The Belt exists independently of any LawnMower —&#xA;it may be a spare part in stock, a belt being replaced,&#xA;or a belt type shared across different mower models.&#xA;Destroying the LawnMower does not destroy the Belt.&#xA;&#xA;Direction of reading is shown on the diagram by a filled triangle&#xA;next to the association name label.&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..2" lt="+Part" mt="is part of" rb="0..1" rt="+Aggregate"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+			<connector xmi:idref="EAID_B21F742F_5078_44E1_A629_0F6CBC27D3E0" name="is part of">
+				<source xmi:idref="EAID_770BE2F0_B7E3_4C69_BF3F_7E6E71B6A7BB">
+					<model ea_localid="8672" type="Class" name="Blade"/>
+					<role name="Part" visibility="Public"/>
+					<type multiplicity="0..2" aggregation="none"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E">
+					<model ea_localid="8670" type="Class" name="LawnMower"/>
+					<role name="Aggregate" visibility="Public"/>
+					<type multiplicity="0..1" aggregation="shared"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6913"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: Part(s).Blade -[is part of]-&amp;gt; LawnMower(s).Aggregate.&#xA;&#xA;Blade end — role: Part, multiplicity 0..2&#xA;(a LawnMower may have no blade fitted — e.g. during servicing (0),&#xA;one blade on a single-deck mower (1),&#xA;or two blades on a dual-deck mower (2).&#xA;The upper bound of 2 reflects the maximum of two cutting decks&#xA;a typical mower configuration supports.)&#xA;&#xA;LawnMower end — role: Aggregate, multiplicity 0..1&#xA;(a Blade either belongs to exactly one LawnMower (1),&#xA;or exists independently — stored as a replacement blade in the barn,&#xA;being sharpened, or just delivered from Amazon (0).)&#xA;&#xA;Aggregation semantics:&#xA;This is a shared aggregation (hollow diamond), not composition.&#xA;The Blade exists independently of any LawnMower —&#xA;it may be a spare blade in storage, a blade being sharpened,&#xA;or a blade type compatible with multiple mower models.&#xA;Destroying the LawnMower does not destroy the Blade.&#xA;&#xA;Direction of reading is shown on the diagram by a filled triangle&#xA;next to the association name label.&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..2" lt="+Part" mt="is part of" rb="0..1" rt="+Aggregate"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+		</connectors>
+		<primitivetypes>
+			<packagedElement xmi:type="uml:Package" xmi:id="EAPrimitiveTypesPackage" name="EA_PrimitiveTypes_Package" visibility="public"/>
+		</primitivetypes>
+		<profiles/>
+		<diagrams>
+			<diagram xmi:id="EAID_861BF3C6_7E33_4b03_BBB0_FF76FF114B17">
+				<model package="EAPK_2DB313D6_A424_4629_B209_F73E77B0FB94" localID="8559" owner="EAPK_2DB313D6_A424_4629_B209_F73E77B0FB94"/>
+				<properties name="UML_Aggregation_LawnMower" type="Logical"/>
+				<project author="Guest" version="1.0" created="2026-03-16 19:55:39" modified="2026-03-17 08:47:15"/>
+				<style1 value="ShowPrivate=1;ShowProtected=1;ShowPublic=1;HideRelationships=0;Locked=0;Border=1;HighlightForeign=1;PackageContents=1;SequenceNotes=0;ScalePrintImage=0;PPgs.cx=0;PPgs.cy=0;DocSize.cx=827;DocSize.cy=1169;ShowDetails=0;Orientation=P;Zoom=100;ShowTags=0;OpParams=1;VisibleAttributeDetail=0;ShowOpRetType=1;ShowIcons=1;CollabNums=0;HideProps=0;ShowReqs=0;ShowCons=0;PaperSize=9;HideParents=0;UseAlias=0;HideAtts=0;HideOps=0;HideStereo=0;HideElemStereo=0;ShowTests=0;ShowMaint=0;ConnectorNotation=UML 2.1;ExplicitNavigability=0;ShowShape=1;AllDockable=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;m_bElementClassifier=1;SPT=1;ShowNotes=0;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;"/>
+				<style2 value="ExcludeRTF=0;DocAll=0;HideQuals=0;AttPkg=1;ShowTests=0;ShowMaint=0;SuppressFOC=1;MatrixActive=0;SwimlanesActive=1;KanbanActive=0;MatrixLineWidth=1;MatrixLineClr=0;MatrixLocked=0;TConnectorNotation=UML 2.1;TExplicitNavigability=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;m_bElementClassifier=1;SPT=1;MDGDgm=;STBLDgm=;ShowNotes=0;VisibleAttributeDetail=0;ShowOpRetType=1;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;SuppressedCompartments=;Theme=:119;SaveTag=74822C90;"/>
+				<swimlanes value="locked=false;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;ufCol=-1;hl=1;ufh=0;hh=0;cls=0;bw=0;hli=0;bro=0;SwimlaneFont=lfh:-13,lfw:0,lfi:0,lfu:0,lfs:0,lfface:Calibri,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;"/>
+				<matrixitems value="locked=false;matrixactive=false;swimlanesactive=true;kanbanactive=false;width=1;clrLine=0;"/>
+				<extendedProperties/>
+				<persistentstyle value="DGS=On=0:CNT=8:W=120:H=40:SG=0:SGH=0:AEB=0:;AR=0;DCL=0;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;ufCol=-1;hl=1;ufh=0;hh=0;cls=0;bw=0;hli=0;bro=0;SwimlaneFont=lfh:-13,lfw:0,lfi:0,lfu:0,lfs:0,lfface:Calibri,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;;Swimlanes=locked=false;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;ufCol=-1;hl=1;ufh=0;hh=0;cls=0;bw=0;hli=0;bro=0;SwimlaneFont=lfh:-13,lfw:0,lfi:0,lfu:0,lfs:0,lfface:Calibri,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;;"/>
+				<xrefs/>
+				<elements>
+					<element geometry="Left=250;Top=45;Right=340;Bottom=115;" subject="EAID_675309D2_10EE_4D26_81F4_25B2E486C12E" seqno="1" style="DUID=F7B8358E;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="Left=432;Top=238;Right=522;Bottom=308;" subject="EAID_EBA50B28_EE53_4FF2_B4B9_8DCEF7339FED" seqno="2" style="DUID=75B61C52;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="Left=69;Top=238;Right=159;Bottom=308;" subject="EAID_770BE2F0_B7E3_4C69_BF3F_7E6E71B6A7BB" seqno="3" style="DUID=E36F37B0;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="SX=0;SY=0;EX=0;EY=0;EDGE=1;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=22:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=35:CY=14:OX=-58:OY=101:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=1:ROT=0;LMB=;LRT=CX=48:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;IRHS=;ILHS=;Path=114:-80$;" subject="EAID_B21F742F_5078_44E1_A629_0F6CBC27D3E0" style="Mode=3;EOID=F7B8358E;SOID=E36F37B0;Color=-1;LWidth=0;TREE=LH;Hidden=0;"/>
+					<element geometry="SX=0;SY=0;EX=0;EY=0;EDGE=1;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=22:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=35:CY=14:OX=58:OY=99:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=1:ROT=0;LMB=;LRT=CX=48:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;IRHS=;ILHS=;Path=477:-80$;" subject="EAID_8177BB0D_01EF_483D_8FD2_5EE3E1D2B145" style="Mode=3;EOID=F7B8358E;SOID=75B61C52;Color=-1;LWidth=0;TREE=LH;Hidden=0;"/>
+				</elements>
+			</diagram>
+		</diagrams>
+	</xmi:Extension>
+</xmi:XMI>

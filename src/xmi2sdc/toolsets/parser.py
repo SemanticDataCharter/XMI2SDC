@@ -67,7 +67,11 @@ def _detect_dialect(root: ET.Element, raw_xml: str = "") -> XmiDialect:
             if "{" in attr_name:
                 search_text += " " + attr_name.split("}")[0].lstrip("{").lower()
 
-    if "sparxsystems.com" in search_text or "sparx" in search_text:
+    if (
+        "sparxsystems.com" in search_text
+        or "sparx" in search_text
+        or "enterprise architect" in search_text
+    ):
         return XmiDialect.SPARX_EA
     if "nomagic.com" in search_text or "magicdraw" in search_text:
         return XmiDialect.MAGICDRAW
@@ -580,6 +584,115 @@ def _parse_generic_xmi(root: ET.Element, model_name: str) -> ParsedXmiModel:
     )
 
 
+def _extract_ea_connectors(root: ET.Element) -> dict[str, dict]:
+    """Extract connector metadata from the EA xmi:Extension block.
+
+    EA's Extension/connectors section contains the correct aggregation
+    placement (source vs target), which may differ from the uml:Model
+    ownedEnd placement due to a known Sparx EA export quirk.
+
+    Returns:
+        Dict keyed by connector xmi:idref (association xmi_id) with
+        source/target class IDs, aggregation values, and documentation.
+    """
+    for child in root:
+        tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+        if tag != "Extension":
+            continue
+
+        for ext_child in child:
+            ext_tag = ext_child.tag.split("}")[-1] if "}" in ext_child.tag else ext_child.tag
+            if ext_tag != "connectors":
+                continue
+
+            connectors: dict[str, dict] = {}
+            for conn in ext_child:
+                conn_tag = conn.tag.split("}")[-1] if "}" in conn.tag else conn.tag
+                if conn_tag != "connector":
+                    continue
+
+                conn_id = _get_attr(conn, "idref")
+                if not conn_id:
+                    continue
+
+                info: dict = {"xmi_id": conn_id}
+
+                for conn_child in conn:
+                    cc_tag = (
+                        conn_child.tag.split("}")[-1] if "}" in conn_child.tag else conn_child.tag
+                    )
+                    if cc_tag == "documentation":
+                        info["documentation"] = conn_child.get("value", "")
+                    elif cc_tag in ("source", "target"):
+                        end_id = _get_attr(conn_child, "idref")
+                        end_info: dict = {"class_xmi_id": end_id}
+                        for end_child in conn_child:
+                            ec_tag = (
+                                end_child.tag.split("}")[-1]
+                                if "}" in end_child.tag
+                                else end_child.tag
+                            )
+                            if ec_tag == "type":
+                                end_info["aggregation"] = end_child.get("aggregation", "none")
+                        info[cc_tag] = end_info
+
+                connectors[conn_id] = info
+            return connectors
+
+    return {}
+
+
+def _parse_sparx_ea_xmi(root: ET.Element, model_name: str) -> ParsedXmiModel:
+    """Parse a Sparx EA XMI export, correcting the known aggregation inversion.
+
+    EA places ``aggregation="composite"`` on the **component** end (the owned
+    part) in the ``uml:Model`` ownedEnd elements, instead of on the
+    **composite** end (the owner).  The ``xmi:Extension/connectors`` block
+    contains the correct placement.
+
+    This adapter calls the generic parser first, then post-processes
+    associations using the Extension connector metadata.
+    """
+    parsed = _parse_generic_xmi(root, model_name)
+    parsed.dialect = XmiDialect.SPARX_EA
+
+    connectors = _extract_ea_connectors(root)
+    if not connectors:
+        return parsed
+
+    for assoc in parsed.associations:
+        conn = connectors.get(assoc.xmi_id)
+        if not conn:
+            continue
+
+        ea_source = conn.get("source", {})
+        ea_target = conn.get("target", {})
+        ea_source_agg = ea_source.get("aggregation", "none")
+        ea_target_agg = ea_target.get("aggregation", "none")
+
+        # Only correct when EA connector has composition or shared
+        if ea_source_agg == "none" and ea_target_agg == "none":
+            continue
+
+        ea_source_class = ea_source.get("class_xmi_id", "")
+        ea_target_class = ea_target.get("class_xmi_id", "")
+
+        # Match parsed ends to EA connector ends by class xmi_id
+        # and assign the correct aggregation from Extension metadata
+        for parsed_end in (assoc.source, assoc.target):
+            if parsed_end.type_xmi_id == ea_source_class:
+                parsed_end.aggregation = ea_source_agg
+            elif parsed_end.type_xmi_id == ea_target_class:
+                parsed_end.aggregation = ea_target_agg
+
+        # Apply richer documentation from Extension if available
+        ea_doc = conn.get("documentation", "")
+        if ea_doc and (not assoc.documentation or len(ea_doc) > len(assoc.documentation)):
+            assoc.documentation = ea_doc
+
+    return parsed
+
+
 class XmiParserToolset(BaseToolset):
     """Deterministic XMI parser — no LLM calls.
 
@@ -734,12 +847,8 @@ class XmiParserToolset(BaseToolset):
 
         dialect = _detect_dialect(root, xmi_content)
 
-        # Phase 1: generic XMI 2.x only
-        # Phase 2 will add Sparx EA and MagicDraw adapters
         if dialect == XmiDialect.SPARX_EA:
-            # For now, fall through to generic parser
-            parsed = _parse_generic_xmi(root, model_name)
-            parsed.dialect = XmiDialect.SPARX_EA
+            parsed = _parse_sparx_ea_xmi(root, model_name)
         elif dialect == XmiDialect.MAGICDRAW:
             parsed = _parse_generic_xmi(root, model_name)
             parsed.dialect = XmiDialect.MAGICDRAW

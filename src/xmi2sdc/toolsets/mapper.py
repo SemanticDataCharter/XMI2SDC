@@ -465,6 +465,7 @@ class SdcMapperToolset(BaseToolset):
                 "is_cluster": True,
                 "cluster_name": owner_name,
                 "source_xmi_id": assoc.get("xmi_id", ""),
+                "description": assoc.get("documentation", ""),
                 "component_refs": [contained_name],
                 "containment_type": "composition",
             }
