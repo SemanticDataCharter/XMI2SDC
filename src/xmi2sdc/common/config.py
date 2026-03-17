@@ -46,6 +46,7 @@ class SDCStudioConfig(BaseModel):
 
     base_url: str = "http://localhost:8000"
     api_key: Optional[str] = None
+    token: Optional[str] = None
 
 
 class CacheConfig(BaseModel):

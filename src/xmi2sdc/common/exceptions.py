@@ -17,3 +17,11 @@ class MappingError(Exception):
 
 class AssemblyError(Exception):
     """Raised when SDCStudio Assembly API interaction fails."""
+
+
+class AssemblyApiError(AssemblyError):
+    """Raised when the Assembly API returns an error response."""
+
+
+class InsufficientFundsError(AssemblyError):
+    """Raised when the wallet has insufficient funds (HTTP 402)."""
