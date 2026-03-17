@@ -238,7 +238,7 @@ class SdcAssemblerToolset(BaseToolset):
 
         base_url = self._config.sdcstudio.base_url.rstrip("/")
         url = f"{base_url}/api/v1/dmgen/assemble/"
-        token = self._config.sdcstudio.token
+        token = self._config.sdcstudio.api_key
 
         headers: Dict[str, str] = {"Content-Type": "application/json"}
         if token:
@@ -305,7 +305,7 @@ class SdcAssemblerToolset(BaseToolset):
 
         base_url = self._config.sdcstudio.base_url.rstrip("/")
         url = f"{base_url}/uploader/api/data-sources/{data_source_ct_id}/"
-        token = self._config.sdcstudio.token
+        token = self._config.sdcstudio.api_key
 
         headers: Dict[str, str] = {}
         if token:
