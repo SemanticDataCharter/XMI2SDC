@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001"
+         xmi:version="2.1">
+  <uml:Model xmi:type="uml:Model" xmi:id="model_vehicle" name="VehicleModel">
+
+    <!-- Enumeration: FuelType -->
+    <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_fuel" name="FuelType">
+      <ownedComment xmi:type="uml:Comment" body="Types of fuel used by vehicles."/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_gasoline" name="Gasoline">
+        <ownedComment xmi:type="uml:Comment" body="Standard petrol/gasoline fuel."/>
+      </ownedLiteral>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_diesel" name="Diesel">
+        <ownedComment xmi:type="uml:Comment" body="Diesel fuel for compression ignition engines."/>
+      </ownedLiteral>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_electric" name="Electric">
+        <ownedComment xmi:type="uml:Comment" body="Fully electric powertrain."/>
+      </ownedLiteral>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="lit_hybrid" name="Hybrid">
+        <ownedComment xmi:type="uml:Comment" body="Combined internal combustion and electric drivetrain."/>
+      </ownedLiteral>
+    </packagedElement>
+
+    <!-- Class: Vehicle (abstract base) -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_vehicle" name="Vehicle" isAbstract="true">
+      <ownedComment xmi:type="uml:Comment" body="Abstract base class representing any motorized vehicle."/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_vin" name="vin" type="type_string" isID="true">
+        <ownedComment xmi:type="uml:Comment" body="Vehicle Identification Number — unique 17-character identifier."/>
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_make" name="make" type="type_string">
+        <ownedComment xmi:type="uml:Comment" body="Manufacturer brand name."/>
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_year" name="year" type="type_integer">
+        <ownedComment xmi:type="uml:Comment" body="Model year of manufacture."/>
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_fueltype" name="fuelType" type="enum_fuel">
+        <ownedComment xmi:type="uml:Comment" body="Primary fuel source for the vehicle."/>
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_weight" name="weight" type="type_float" default="0.0">
+        <ownedComment xmi:type="uml:Comment" body="Curb weight in kilograms."/>
+        <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedAttribute>
+    </packagedElement>
+
+    <!-- Class: Car extends Vehicle -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_car" name="Car">
+      <ownedComment xmi:type="uml:Comment" body="A passenger car — a wheeled motor vehicle for transportation."/>
+      <generalization xmi:type="uml:Generalization" xmi:id="gen_car_vehicle" general="cls_vehicle"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_doorcount" name="doorCount" type="type_integer" default="4">
+        <ownedComment xmi:type="uml:Comment" body="Number of passenger doors."/>
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedAttribute>
+    </packagedElement>
+
+    <!-- Class: ElectricCar extends Car -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_ecar" name="ElectricCar">
+      <ownedComment xmi:type="uml:Comment" body="A battery-electric car with no internal combustion engine."/>
+      <generalization xmi:type="uml:Generalization" xmi:id="gen_ecar_car" general="cls_car"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="attr_battery" name="batteryCapacity" type="type_float">
+        <ownedComment xmi:type="uml:Comment" body="Battery capacity in kilowatt-hours (kWh)."/>
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedAttribute>
+    </packagedElement>
+
+    <!-- Primitive type stubs -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_string" name="String"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_integer" name="Integer"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_float" name="Float"/>
+  </uml:Model>
+</xmi:XMI>

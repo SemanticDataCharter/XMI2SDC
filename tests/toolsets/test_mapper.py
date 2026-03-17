@@ -580,3 +580,73 @@ async def test_map_ea_tea_sugar_glass_complex(mapper, ea_tea_sugar_glass_complex
 
     assoc_clusters = [c for c in mapping["clusters"] if c.get("association_type") == "shared"]
     assert len(assoc_clusters) == 1
+
+
+# --- Generic Inheritance (Vehicle hierarchy) ---
+
+
+@pytest.mark.asyncio
+async def test_map_generic_inheritance_flattening(mapper, generic_inheritance_path):
+    """Vehicle=5, Car=6, ElectricCar=7 components after inheritance flattening."""
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(generic_inheritance_path))
+    mapping = await mapper.map_model(parsed)
+
+    cluster_map = {}
+    for cluster in mapping["clusters"]:
+        name = cluster["cluster_name"]
+        cluster_map[name] = len(cluster.get("component_refs", []))
+
+    assert (
+        cluster_map.get("Vehicle") == 5
+    ), f"Vehicle: expected 5, got {cluster_map.get('Vehicle')}"
+    assert cluster_map.get("Car") == 6, f"Car: expected 6, got {cluster_map.get('Car')}"
+    assert (
+        cluster_map.get("ElectricCar") == 7
+    ), f"ElectricCar: expected 7, got {cluster_map.get('ElectricCar')}"
+
+
+@pytest.mark.asyncio
+async def test_map_generic_enum_typed_attribute(mapper, generic_inheritance_path):
+    """fuelType should map to XdString with enumerations list."""
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(generic_inheritance_path))
+    mapping = await mapper.map_model(parsed)
+
+    fuel_comp = next(
+        (c for c in mapping["components"] if c["source_attribute"] == "fuelType"),
+        None,
+    )
+    assert fuel_comp is not None, "fuelType component not found"
+    assert fuel_comp["sdc4_type"] == "XdString"
+    assert fuel_comp["enumerations"] == ["Gasoline", "Diesel", "Electric", "Hybrid"]
+
+
+# --- Generic Associations (University course system) ---
+
+
+@pytest.mark.asyncio
+async def test_map_generic_university_associations(mapper, generic_associations_path):
+    """University model: 1 composition + 1 shared + 1 plain association cluster."""
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(generic_associations_path))
+    mapping = await mapper.map_model(parsed)
+
+    comp_clusters = [c for c in mapping["clusters"] if c.get("containment_type") == "composition"]
+    assert len(comp_clusters) == 1
+    assert comp_clusters[0]["cluster_name"] == "Course"
+
+    shared_clusters = [c for c in mapping["clusters"] if c.get("association_type") == "shared"]
+    assert len(shared_clusters) == 1
+
+    plain_clusters = [c for c in mapping["clusters"] if c.get("association_type") == "plain"]
+    assert len(plain_clusters) == 1

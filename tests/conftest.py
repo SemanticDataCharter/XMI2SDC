@@ -94,5 +94,15 @@ def ea_tea_sugar_glass_complex_path(xmi_samples_dir: Path) -> Path:
 
 
 @pytest.fixture
+def generic_inheritance_path(xmi_samples_dir: Path) -> Path:
+    return xmi_samples_dir / "generic_inheritance.xmi"
+
+
+@pytest.fixture
+def generic_associations_path(xmi_samples_dir: Path) -> Path:
+    return xmi_samples_dir / "generic_associations.xmi"
+
+
+@pytest.fixture
 def generic_xmi_content(generic_xmi_path: Path) -> str:
     return generic_xmi_path.read_text()
