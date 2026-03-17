@@ -497,3 +497,28 @@ async def test_map_composition_regression(mapper):
     assert clusters[0]["cluster_name"] == "Parent"
     # Composition should NOT produce association components
     assert len(mapping["components"]) == 0
+
+
+@pytest.mark.asyncio
+async def test_map_ea_composition_cluster_direction(mapper, ea_composition_cat_tail_path):
+    """EA composition: cluster should be named 'Cat' containing 'Tail'.
+
+    After the EA adapter corrects aggregation direction, the mapper
+    should produce a composition cluster owned by Cat (not Tail).
+    """
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(ea_composition_cat_tail_path))
+    mapping = await mapper.map_model(parsed)
+
+    # Should have composition clusters (2 empty class clusters + 1 composition)
+    comp_clusters = [c for c in mapping["clusters"] if c.get("containment_type") == "composition"]
+    assert len(comp_clusters) == 1
+
+    comp = comp_clusters[0]
+    assert (
+        comp["cluster_name"] == "Cat"
+    ), f"Composition cluster should be 'Cat', got '{comp['cluster_name']}'"
+    assert "Tail" in comp["component_refs"]

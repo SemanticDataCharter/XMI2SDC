@@ -227,11 +227,11 @@
             <connector xmi:idref="EAID_assoc_01">
                 <source xmi:idref="EAID_CAT_01">
                     <model ea_localid="2" type="Class" name="1.0 Develop Vision and Strategy"/>
-                    <type multiplicity="1" aggregation="none" containment="Unspecified"/>
+                    <type multiplicity="1" aggregation="composite" containment="Unspecified"/>
                 </source>
                 <target xmi:idref="EAID_PG_01_01">
                     <model ea_localid="3" type="Class" name="1.1 Define the business concept and long-term vision"/>
-                    <type aggregation="composite" containment="Unspecified"/>
+                    <type aggregation="none" containment="Unspecified"/>
                 </target>
                 <properties ea_type="Aggregation" subtype="Strong" direction="Source -&gt; Destination"/>
             </connector>

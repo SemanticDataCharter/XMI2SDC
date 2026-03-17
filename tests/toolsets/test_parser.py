@@ -530,3 +530,80 @@ async def test_it_employment_association_multiplicities(parser, it_employment_pa
     client = next(e for e in (contracts["source"], contracts["target"]) if e["role"] == "client")
     assert client["multiplicity"]["lower"] == 0
     assert client["multiplicity"]["upper"] == -1
+
+
+# --- EA Composition Correction (Cat-Tail, Tea-Sugar) ---
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_composition_direction(parser, ea_composition_cat_tail_path):
+    """Cat should be composite owner, Tail should be component (not inverted).
+
+    Sparx EA places aggregation="composite" on the component end in
+    uml:Model ownedEnd elements. The EA adapter corrects this using
+    Extension/connectors metadata.
+    """
+    result = await parser.parse_xmi_file(str(ea_composition_cat_tail_path))
+    assert result["dialect"] == "sparx_ea"
+    assert len(result["associations"]) == 1
+
+    assoc = result["associations"][0]
+    src = assoc["source"]
+    tgt = assoc["target"]
+
+    # Find which end points to Cat and which to Tail
+    if src["type_name"] == "Cat":
+        cat_end, tail_end = src, tgt
+    else:
+        cat_end, tail_end = tgt, src
+
+    # Cat (the owner) should have aggregation=composite
+    assert (
+        cat_end["aggregation"] == "composite"
+    ), f"Cat should be composite, got {cat_end['aggregation']}"
+    # Tail (the component) should have aggregation=none
+    assert tail_end["aggregation"] == "none", f"Tail should be none, got {tail_end['aggregation']}"
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_composition_aggregation_field(parser, ea_composition_tea_sugar_path):
+    """TeaPortion should be composite owner, SugarPortion the component."""
+    result = await parser.parse_xmi_file(str(ea_composition_tea_sugar_path))
+    assert result["dialect"] == "sparx_ea"
+    assert len(result["associations"]) == 1
+
+    assoc = result["associations"][0]
+    src = assoc["source"]
+    tgt = assoc["target"]
+
+    if src["type_name"] == "TeaPortion":
+        tea_end, sugar_end = src, tgt
+    else:
+        tea_end, sugar_end = tgt, src
+
+    assert tea_end["aggregation"] == "composite"
+    assert sugar_end["aggregation"] == "none"
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_composition_documentation(parser, ea_composition_cat_tail_path):
+    """Rich Extension documentation should be captured on the association."""
+    result = await parser.parse_xmi_file(str(ea_composition_cat_tail_path))
+    assoc = result["associations"][0]
+
+    # Extension connector has rich documentation about composition semantics
+    assert "composite aggregation" in assoc["documentation"]
+    assert "Cat" in assoc["documentation"]
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_plain_associations_unchanged(parser, it_employment_path):
+    """IT Employment plain associations should be unchanged by EA adapter.
+
+    Plain associations (aggregation=none on both ends) are unaffected
+    by the EA composition correction.
+    """
+    result = await parser.parse_xmi_file(str(it_employment_path))
+    for assoc in result["associations"]:
+        assert assoc["source"]["aggregation"] == "none"
+        assert assoc["target"]["aggregation"] == "none"

@@ -69,5 +69,15 @@ def it_employment_path(xmi_samples_dir: Path) -> Path:
 
 
 @pytest.fixture
+def ea_composition_cat_tail_path(xmi_samples_dir: Path) -> Path:
+    return xmi_samples_dir / "ea_composition_cat_tail.xmi"
+
+
+@pytest.fixture
+def ea_composition_tea_sugar_path(xmi_samples_dir: Path) -> Path:
+    return xmi_samples_dir / "ea_composition_tea_sugar.xmi"
+
+
+@pytest.fixture
 def generic_xmi_content(generic_xmi_path: Path) -> str:
     return generic_xmi_path.read_text()
