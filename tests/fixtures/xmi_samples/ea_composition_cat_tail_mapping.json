@@ -1,0 +1,36 @@
+{
+  "model_name": "ea_composition_cat_tail",
+  "dialect": "sparx_ea",
+  "components": [],
+  "clusters": [
+    {
+      "cluster_name": "Cat",
+      "source_xmi_id": "EAID_12ABC718_62C9_4603_87F7_FEBA5E9D2DE9",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "Tail",
+      "source_xmi_id": "EAID_0E1EE365_B350_4D45_B567_B97066B93CB6",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "Cat",
+      "source_xmi_id": "EAID_11973E0A_2A5E_48B6_9310_A82A76BBCE05",
+      "description": "Reading: Component(s).Tail -[is part of]-&gt; Cat.Whole.\n\nTail end \u2014 role: Component, multiplicity 0..1\n(a Cat has at most one Tail (1) \u2014 multiple tails are out of scope \u2014\nbut tailless cats do exist, hence the lower bound of 0.)\n\nCat end \u2014 role: Composite, multiplicity 1 (default, not shown)\n(a Tail belongs to exactly one Cat \u2014 always.\nA Tail cannot exist without its Cat.)\n\nComposition semantics (filled diamond):\nThis is a composite aggregation \u2014 the strongest ownership in UML.\nThe Tail cannot exist independently of the Cat:\nif the Cat is put outside, the Tail goes with it.\nIf you see a tail in the doorway and pull it,\na meowing Cat will inevitably follow.\nA Tail may belong to at most one Cat at any point in time.\n\nDirection of reading is shown on the diagram by a filled triangle\nnext to the association name label.\nThe association direction itself is Unspecified.",
+      "component_refs": [
+        "Tail"
+      ],
+      "containment_type": "composition"
+    }
+  ],
+  "unmapped": [],
+  "summary": {
+    "total_classes": 2,
+    "total_components": 0,
+    "total_clusters": 3,
+    "total_unmapped": 0
+  }
+}
