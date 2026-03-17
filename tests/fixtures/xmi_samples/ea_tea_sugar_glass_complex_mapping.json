@@ -1,0 +1,52 @@
+{
+  "model_name": "ea_tea_sugar_glass_complex",
+  "dialect": "sparx_ea",
+  "components": [],
+  "clusters": [
+    {
+      "cluster_name": "Glass",
+      "source_xmi_id": "EAID_5547F9B9_7F6B_432B_AB75_A6F6C574AADA",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "SugarPortion",
+      "source_xmi_id": "EAID_870C07DC_A6D8_470C_95EF_333FE85D85D2",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "TeaPortion",
+      "source_xmi_id": "EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "TeaPortion",
+      "source_xmi_id": "EAID_02011812_67E0_4440_81E9_E2B7836B2091",
+      "description": "Reading: Component(s).SugarPortion -[is an inseparable part of]-> TeaPortion.Composite.\n\nSugarPortion end \u2014 role: Component, multiplicity 0..1\n(a TeaPortion contains at most one SugarPortion \u2014\nunsweetened tea is perfectly valid, hence the lower bound of 0.)\n\nTeaPortion end \u2014 role: Composite, multiplicity 1 (default, not shown)\n(a dissolved SugarPortion belongs to exactly one TeaPortion.\nOnce dissolved, it cannot exist independently.)\n\nComposition semantics (filled diamond):\nOnce sugar is dissolved in tea, it cannot be separated back out\nby any natural means.\nWhen the tea is drunk, the sugar is consumed along with it.\nA dissolved SugarPortion may belong to at most one TeaPortion\nat any point in time.",
+      "component_refs": [
+        "SugarPortion"
+      ],
+      "containment_type": "composition"
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "Glass",
+      "source_xmi_id": "EAID_32FA0D83_B99D_4CDE_843D_F596C0F0B15B",
+      "description": "Reading: Content(s).TeaPortion -[is poured into]-> Glass(es).Vessel.\n\nTeaPortion end \u2014 role: Content, multiplicity 0..1\n(a Glass may be empty (0),\nor contain exactly one TeaPortion (1).)\n\nGlass end \u2014 role: Vessel, multiplicity 1..*\n(a TeaPortion must be poured into at least one Glass \u2014\nbut it may also be split across two glasses to cool faster.)\n\nAggregation semantics (hollow diamond):\nTea can be poured from one Glass into another,\nor split across several glasses.\nThe TeaPortion exists independently of any particular Glass \u2014\nthe Glass is just the vessel, not the owner.",
+      "component_refs": [
+        "TeaPortion"
+      ],
+      "containment_type": "aggregation"
+    }
+  ],
+  "unmapped": [],
+  "summary": {
+    "total_classes": 3,
+    "total_components": 0,
+    "total_clusters": 5,
+    "total_unmapped": 0
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "model_name": "ea_lawnmower_aggregation",
+  "dialect": "sparx_ea",
+  "components": [],
+  "clusters": [
+    {
+      "cluster_name": "Belt",
+      "source_xmi_id": "EAID_EBA50B28_EE53_4FF2_B4B9_8DCEF7339FED",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "Blade",
+      "source_xmi_id": "EAID_770BE2F0_B7E3_4C69_BF3F_7E6E71B6A7BB",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "LawnMower",
+      "source_xmi_id": "EAID_675309D2_10EE_4D26_81F4_25B2E486C12E",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "LawnMower",
+      "source_xmi_id": "EAID_8177BB0D_01EF_483D_8FD2_5EE3E1D2B145",
+      "description": "Reading: Part(s).Belt -[is part of]-> LawnMower(s).Aggregate.\n\nBelt end \u2014 role: Part, multiplicity 0..2\n(a LawnMower may have no belt fitted at all \u2014 e.g. during maintenance (0),\none belt on a single-deck mower (1),\nor two belts on a dual-deck mower (2).)\n\nLawnMower end \u2014 role: Aggregate, multiplicity 0..1\n(a Belt either belongs to exactly one LawnMower (1),\nor exists independently \u2014 stored as a spare part in the barn (0).)\n\nAggregation semantics (hollow diamond):\nThe Belt exists independently of any LawnMower \u2014\nit may be a spare part in stock or a belt being replaced.\nDestroying the LawnMower does not destroy the Belt.",
+      "component_refs": [
+        "Belt"
+      ],
+      "containment_type": "aggregation"
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "LawnMower",
+      "source_xmi_id": "EAID_B21F742F_5078_44E1_A629_0F6CBC27D3E0",
+      "description": "Reading: Part(s).Blade -[is part of]-> LawnMower(s).Aggregate.\n\nBlade end \u2014 role: Part, multiplicity 0..2\n(a LawnMower may have no blade fitted \u2014 e.g. during servicing (0),\none blade on a single-deck mower (1),\nor two blades on a dual-deck mower (2).)\n\nLawnMower end \u2014 role: Aggregate, multiplicity 0..1\n(a Blade either belongs to exactly one LawnMower (1),\nor exists independently \u2014 stored as a replacement blade in the barn (0).)\n\nAggregation semantics (hollow diamond):\nThe Blade exists independently of any LawnMower \u2014\nit may be a spare blade in storage or a blade being sharpened.\nDestroying the LawnMower does not destroy the Blade.",
+      "component_refs": [
+        "Blade"
+      ],
+      "containment_type": "aggregation"
+    }
+  ],
+  "unmapped": [],
+  "summary": {
+    "total_classes": 3,
+    "total_components": 0,
+    "total_clusters": 5,
+    "total_unmapped": 0
+  }
+}
