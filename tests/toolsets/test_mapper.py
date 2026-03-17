@@ -522,3 +522,61 @@ async def test_map_ea_composition_cluster_direction(mapper, ea_composition_cat_t
         comp["cluster_name"] == "Cat"
     ), f"Composition cluster should be 'Cat', got '{comp['cluster_name']}'"
     assert "Tail" in comp["component_refs"]
+
+
+@pytest.mark.asyncio
+async def test_map_ea_lawnmower_aggregation(mapper, ea_lawnmower_aggregation_path):
+    """LawnMower aggregation: 2 shared association clusters + 3 empty class clusters."""
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(ea_lawnmower_aggregation_path))
+    mapping = await mapper.map_model(parsed)
+
+    assoc_clusters = [c for c in mapping["clusters"] if "association_type" in c]
+    assert len(assoc_clusters) == 2
+    for ac in assoc_clusters:
+        assert ac["association_type"] == "shared"
+
+
+@pytest.mark.asyncio
+async def test_map_ea_lawnmower_complex(mapper, ea_lawnmower_complex_path):
+    """LawnMower complex: 2 composition + 3 shared + 5 class clusters."""
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(ea_lawnmower_complex_path))
+    mapping = await mapper.map_model(parsed)
+
+    comp_clusters = [c for c in mapping["clusters"] if c.get("containment_type") == "composition"]
+    assert len(comp_clusters) == 2
+    comp_owners = sorted(c["cluster_name"] for c in comp_clusters)
+    assert comp_owners == ["LawnMower", "LawnMower"]
+
+    # Composition components should be CuttingDeck and Transmission
+    comp_components = sorted(ref for c in comp_clusters for ref in c["component_refs"])
+    assert comp_components == ["CuttingDeck", "Transmission"]
+
+    assoc_clusters = [c for c in mapping["clusters"] if c.get("association_type") == "shared"]
+    assert len(assoc_clusters) == 3
+
+
+@pytest.mark.asyncio
+async def test_map_ea_tea_sugar_glass_complex(mapper, ea_tea_sugar_glass_complex_path):
+    """Tea-Sugar-Glass: 1 composition + 1 shared + 3 class clusters."""
+    from xmi2sdc.toolsets.parser import XmiParserToolset
+
+    config = mapper._config
+    parser = XmiParserToolset(config=config)
+    parsed = await parser.parse_xmi_file(str(ea_tea_sugar_glass_complex_path))
+    mapping = await mapper.map_model(parsed)
+
+    comp_clusters = [c for c in mapping["clusters"] if c.get("containment_type") == "composition"]
+    assert len(comp_clusters) == 1
+    assert comp_clusters[0]["cluster_name"] == "TeaPortion"
+    assert "SugarPortion" in comp_clusters[0]["component_refs"]
+
+    assoc_clusters = [c for c in mapping["clusters"] if c.get("association_type") == "shared"]
+    assert len(assoc_clusters) == 1

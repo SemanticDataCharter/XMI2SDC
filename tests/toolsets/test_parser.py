@@ -596,6 +596,204 @@ async def test_parse_ea_composition_documentation(parser, ea_composition_cat_tai
     assert "Cat" in assoc["documentation"]
 
 
+# --- EA Shared Aggregation (LawnMower) ---
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_lawnmower_aggregation_classes(parser, ea_lawnmower_aggregation_path):
+    """Should find 3 classes: Belt, Blade, LawnMower."""
+    result = await parser.parse_xmi_file(str(ea_lawnmower_aggregation_path))
+    assert result["dialect"] == "sparx_ea"
+    pkg = result["packages"][0]
+    class_names = sorted(c["name"] for c in pkg["classes"])
+    assert class_names == ["Belt", "Blade", "LawnMower"]
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_lawnmower_aggregation_direction(parser, ea_lawnmower_aggregation_path):
+    """LawnMower should be the aggregate (shared), Belt/Blade should be none.
+
+    EA places aggregation="shared" on the Part end in uml:Model.
+    The adapter corrects this using Extension/connectors metadata.
+    """
+    result = await parser.parse_xmi_file(str(ea_lawnmower_aggregation_path))
+    assert len(result["associations"]) == 2
+
+    for assoc in result["associations"]:
+        src = assoc["source"]
+        tgt = assoc["target"]
+
+        # Find which end is LawnMower
+        if src["type_name"] == "LawnMower":
+            agg_end, part_end = src, tgt
+        else:
+            agg_end, part_end = tgt, src
+
+        assert agg_end["type_name"] == "LawnMower"
+        assert (
+            agg_end["aggregation"] == "shared"
+        ), f"LawnMower should be shared, got {agg_end['aggregation']}"
+        assert (
+            part_end["aggregation"] == "none"
+        ), f"{part_end['type_name']} should be none, got {part_end['aggregation']}"
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_lawnmower_aggregation_documentation(parser, ea_lawnmower_aggregation_path):
+    """Rich Extension documentation should be captured on aggregation associations."""
+    result = await parser.parse_xmi_file(str(ea_lawnmower_aggregation_path))
+    for assoc in result["associations"]:
+        assert "shared aggregation" in assoc["documentation"].lower()
+
+
+# --- EA Mixed Composition + Aggregation (LawnMower Complex) ---
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_lawnmower_complex_classes(parser, ea_lawnmower_complex_path):
+    """Should find 5 classes: Belt, Blade, CuttingDeck, LawnMower, Transmission."""
+    result = await parser.parse_xmi_file(str(ea_lawnmower_complex_path))
+    assert result["dialect"] == "sparx_ea"
+    pkg = result["packages"][0]
+    class_names = sorted(c["name"] for c in pkg["classes"])
+    assert class_names == ["Belt", "Blade", "CuttingDeck", "LawnMower", "Transmission"]
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_lawnmower_complex_association_count(parser, ea_lawnmower_complex_path):
+    """Should find 5 associations: 2 composition + 3 shared aggregation."""
+    result = await parser.parse_xmi_file(str(ea_lawnmower_complex_path))
+    assert len(result["associations"]) == 5
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_lawnmower_complex_compositions(parser, ea_lawnmower_complex_path):
+    """LawnMower should be composite owner of CuttingDeck and Transmission."""
+    result = await parser.parse_xmi_file(str(ea_lawnmower_complex_path))
+
+    comp_assocs = []
+    for assoc in result["associations"]:
+        src_agg = assoc["source"]["aggregation"]
+        tgt_agg = assoc["target"]["aggregation"]
+        if src_agg == "composite" or tgt_agg == "composite":
+            comp_assocs.append(assoc)
+
+    assert len(comp_assocs) == 2
+
+    for assoc in comp_assocs:
+        src = assoc["source"]
+        tgt = assoc["target"]
+        if src["aggregation"] == "composite":
+            owner, component = src, tgt
+        else:
+            owner, component = tgt, src
+
+        assert owner["type_name"] == "LawnMower", (
+            f"LawnMower should own {component['type_name']}, " f"got {owner['type_name']} as owner"
+        )
+
+    component_names = sorted(
+        (tgt if src["aggregation"] == "composite" else src)["type_name"]
+        for assoc in comp_assocs
+        for src, tgt in [(assoc["source"], assoc["target"])]
+    )
+    assert component_names == ["CuttingDeck", "Transmission"]
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_lawnmower_complex_aggregations(parser, ea_lawnmower_complex_path):
+    """Shared aggregations: Belt→Transmission, Belt→CuttingDeck, Blade→CuttingDeck."""
+    result = await parser.parse_xmi_file(str(ea_lawnmower_complex_path))
+
+    shared_assocs = []
+    for assoc in result["associations"]:
+        src_agg = assoc["source"]["aggregation"]
+        tgt_agg = assoc["target"]["aggregation"]
+        if src_agg == "shared" or tgt_agg == "shared":
+            shared_assocs.append(assoc)
+
+    assert len(shared_assocs) == 3
+
+    # Each shared aggregation should have the aggregate on the correct end
+    for assoc in shared_assocs:
+        src = assoc["source"]
+        tgt = assoc["target"]
+        if src["aggregation"] == "shared":
+            agg_end, part_end = src, tgt
+        else:
+            agg_end, part_end = tgt, src
+
+        assert agg_end["type_name"] in ("Transmission", "CuttingDeck")
+        assert part_end["type_name"] in ("Belt", "Blade")
+        assert part_end["aggregation"] == "none"
+
+
+# --- EA Mixed Composition + Aggregation (Tea Sugar Glass Complex) ---
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_tea_sugar_glass_classes(parser, ea_tea_sugar_glass_complex_path):
+    """Should find 3 classes: Glass, SugarPortion, TeaPortion."""
+    result = await parser.parse_xmi_file(str(ea_tea_sugar_glass_complex_path))
+    assert result["dialect"] == "sparx_ea"
+    pkg = result["packages"][0]
+    class_names = sorted(c["name"] for c in pkg["classes"])
+    assert class_names == ["Glass", "SugarPortion", "TeaPortion"]
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_tea_sugar_glass_composition(parser, ea_tea_sugar_glass_complex_path):
+    """TeaPortion should be composite owner of SugarPortion."""
+    result = await parser.parse_xmi_file(str(ea_tea_sugar_glass_complex_path))
+
+    comp_assoc = None
+    for assoc in result["associations"]:
+        src_agg = assoc["source"]["aggregation"]
+        tgt_agg = assoc["target"]["aggregation"]
+        if src_agg == "composite" or tgt_agg == "composite":
+            comp_assoc = assoc
+            break
+
+    assert comp_assoc is not None, "Should have a composition association"
+
+    src = comp_assoc["source"]
+    tgt = comp_assoc["target"]
+    if src["aggregation"] == "composite":
+        owner, component = src, tgt
+    else:
+        owner, component = tgt, src
+
+    assert owner["type_name"] == "TeaPortion"
+    assert component["type_name"] == "SugarPortion"
+
+
+@pytest.mark.asyncio
+async def test_parse_ea_tea_sugar_glass_aggregation(parser, ea_tea_sugar_glass_complex_path):
+    """Glass should be shared aggregate of TeaPortion."""
+    result = await parser.parse_xmi_file(str(ea_tea_sugar_glass_complex_path))
+
+    shared_assoc = None
+    for assoc in result["associations"]:
+        src_agg = assoc["source"]["aggregation"]
+        tgt_agg = assoc["target"]["aggregation"]
+        if src_agg == "shared" or tgt_agg == "shared":
+            shared_assoc = assoc
+            break
+
+    assert shared_assoc is not None, "Should have a shared aggregation association"
+
+    src = shared_assoc["source"]
+    tgt = shared_assoc["target"]
+    if src["aggregation"] == "shared":
+        agg_end, content_end = src, tgt
+    else:
+        agg_end, content_end = tgt, src
+
+    assert agg_end["type_name"] == "Glass"
+    assert content_end["type_name"] == "TeaPortion"
+    assert content_end["aggregation"] == "none"
+
+
 @pytest.mark.asyncio
 async def test_parse_ea_plain_associations_unchanged(parser, it_employment_path):
     """IT Employment plain associations should be unchanged by EA adapter.

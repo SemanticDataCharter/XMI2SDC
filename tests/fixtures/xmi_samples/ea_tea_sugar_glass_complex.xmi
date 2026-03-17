@@ -1,0 +1,192 @@
+<?xml  version='1.0' encoding='windows-1252' ?>
+<xmi:XMI xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1">
+	<xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5" exporterID="1716"/>
+	<uml:Model xmi:type="uml:Model" name="EA_Model" visibility="public">
+		<packagedElement xmi:type="uml:Package" xmi:id="EAPK_9A7E0E95_6FD5_4515_976B_921224B43988" name="UML_Composition_Tea_Sugar_Glass" visibility="public">
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_5547F9B9_7F6B_432B_AB75_A6F6C574AADA" name="Glass" visibility="public"/>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_32FA0D83_B99D_4CDE_843D_F596C0F0B15B" name="is poured into" visibility="public">
+				<memberEnd xmi:idref="EAID_dstFA0D83_B99D_4CDE_843D_F596C0F0B15B"/>
+				<memberEnd xmi:idref="EAID_srcFA0D83_B99D_4CDE_843D_F596C0F0B15B"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_srcFA0D83_B99D_4CDE_843D_F596C0F0B15B" name="Content" visibility="public" association="EAID_32FA0D83_B99D_4CDE_843D_F596C0F0B15B" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="shared">
+					<type xmi:idref="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000001__B99D_4CDE_843D_F596C0F0B15B" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000002__B99D_4CDE_843D_F596C0F0B15B" value="1"/>
+				</ownedEnd>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dstFA0D83_B99D_4CDE_843D_F596C0F0B15B" name="Vessel" visibility="public" association="EAID_32FA0D83_B99D_4CDE_843D_F596C0F0B15B" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_5547F9B9_7F6B_432B_AB75_A6F6C574AADA"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000003__B99D_4CDE_843D_F596C0F0B15B" value="1"/>
+					<upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI000004__B99D_4CDE_843D_F596C0F0B15B" value="-1"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_870C07DC_A6D8_470C_95EF_333FE85D85D2" name="SugarPortion" visibility="public"/>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_02011812_67E0_4440_81E9_E2B7836B2091" name="is an inseparable part of" visibility="public">
+				<memberEnd xmi:idref="EAID_dst011812_67E0_4440_81E9_E2B7836B2091"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dst011812_67E0_4440_81E9_E2B7836B2091" name="Composite" visibility="public" association="EAID_02011812_67E0_4440_81E9_E2B7836B2091" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115"/>
+				</ownedEnd>
+				<memberEnd xmi:idref="EAID_src011812_67E0_4440_81E9_E2B7836B2091"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_src011812_67E0_4440_81E9_E2B7836B2091" name="Component" visibility="public" association="EAID_02011812_67E0_4440_81E9_E2B7836B2091" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="composite">
+					<type xmi:idref="EAID_870C07DC_A6D8_470C_95EF_333FE85D85D2"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000005__67E0_4440_81E9_E2B7836B2091" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000006__67E0_4440_81E9_E2B7836B2091" value="1"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115" name="TeaPortion" visibility="public"/>
+		</packagedElement>
+	</uml:Model>
+	<xmi:Extension extender="Enterprise Architect" extenderID="6.5">
+		<elements>
+			<element xmi:idref="EAPK_9A7E0E95_6FD5_4515_976B_921224B43988" xmi:type="uml:Package" name="UML_Composition_Tea_Sugar_Glass" scope="public">
+				<model package2="EAID_9A7E0E95_6FD5_4515_976B_921224B43988" package="EAPK_62F7F2D0_5402_4e31_8A22_93B98A809F99" tpos="0" ea_localid="26" ea_eleType="package"/>
+				<properties isSpecification="false" sType="Package" nType="0" scope="public"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:09:51" modified="2026-03-16 21:09:51" complexity="1" status="Proposed"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="Model"/>
+				<packageproperties version="1.0" tpos="0"/>
+				<paths/>
+				<times created="2026-03-16 21:09:51" modified="2026-03-16 21:09:51"/>
+				<flags iscontrolled="0" isprotected="0" batchsave="0" batchload="0" usedtd="0" logxml="0"/>
+			</element>
+			<element xmi:idref="EAID_5547F9B9_7F6B_432B_AB75_A6F6C574AADA" xmi:type="uml:Class" name="Glass" scope="public">
+				<model package="EAPK_9A7E0E95_6FD5_4515_976B_921224B43988" tpos="0" ea_localid="8689" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:09:51" modified="2026-03-16 21:09:51"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_Composition_Tea_Sugar_Glass"/>
+				<links>
+					<Association xmi:id="EAID_32FA0D83_B99D_4CDE_843D_F596C0F0B15B" start="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115" end="EAID_5547F9B9_7F6B_432B_AB75_A6F6C574AADA"/>
+				</links>
+			</element>
+			<element xmi:idref="EAID_870C07DC_A6D8_470C_95EF_333FE85D85D2" xmi:type="uml:Class" name="SugarPortion" scope="public">
+				<model package="EAPK_9A7E0E95_6FD5_4515_976B_921224B43988" tpos="0" ea_localid="8688" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:09:51" modified="2026-03-16 21:09:51"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_Composition_Tea_Sugar_Glass"/>
+				<links>
+					<Association xmi:id="EAID_02011812_67E0_4440_81E9_E2B7836B2091" start="EAID_870C07DC_A6D8_470C_95EF_333FE85D85D2" end="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115"/>
+				</links>
+			</element>
+			<element xmi:idref="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115" xmi:type="uml:Class" name="TeaPortion" scope="public">
+				<model package="EAPK_9A7E0E95_6FD5_4515_976B_921224B43988" tpos="0" ea_localid="8687" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:09:51" modified="2026-03-16 21:09:51"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_Composition_Tea_Sugar_Glass"/>
+				<links>
+					<Association xmi:id="EAID_32FA0D83_B99D_4CDE_843D_F596C0F0B15B" start="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115" end="EAID_5547F9B9_7F6B_432B_AB75_A6F6C574AADA"/>
+					<Association xmi:id="EAID_02011812_67E0_4440_81E9_E2B7836B2091" start="EAID_870C07DC_A6D8_470C_95EF_333FE85D85D2" end="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115"/>
+				</links>
+			</element>
+		</elements>
+		<connectors>
+			<connector xmi:idref="EAID_32FA0D83_B99D_4CDE_843D_F596C0F0B15B" name="is poured into">
+				<source xmi:idref="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115">
+					<model ea_localid="8687" type="Class" name="TeaPortion"/>
+					<role name="Content" visibility="Public"/>
+					<type multiplicity="0..1" aggregation="none"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_5547F9B9_7F6B_432B_AB75_A6F6C574AADA">
+					<model ea_localid="8689" type="Class" name="Glass"/>
+					<role name="Vessel" visibility="Public"/>
+					<type multiplicity="1..*" aggregation="shared"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6918"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: Content(s).TeaPortion -[is poured into]-&gt; Glass(es).Vessel.&#xA;&#xA;TeaPortion end — role: Content, multiplicity 0..1&#xA;(a Glass may be empty (0),&#xA;or contain exactly one TeaPortion (1).&#xA;A glass holds one portion at a time.)&#xA;&#xA;Glass end — role: Vessel, multiplicity 1..*&#xA;(a TeaPortion must be poured into at least one Glass —&#xA;a portion of tea that has never been poured into any glass&#xA;does not make practical sense (lower bound 1).&#xA;But it may also be split across two glasses to cool faster (upper bound *).)&#xA;&#xA;Aggregation semantics (hollow diamond):&#xA;This is a shared aggregation, not composition.&#xA;Tea can be poured from one Glass into another,&#xA;or split across several glasses.&#xA;The TeaPortion exists independently of any particular Glass —&#xA;the Glass is just the vessel, not the owner.&#xA;&#xA;Contrast with the SugarPortion:&#xA;sugar dissolved in the tea is a composition —&#xA;it cannot be separated from the TeaPortion under any normal circumstance.&#xA;&#xA;Direction of reading is shown on the diagram by a filled triangle&#xA;next to the association name label.&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..1" lt="+Content" mt="is poured into" rb="1..*" rt="+Vessel"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+			<connector xmi:idref="EAID_02011812_67E0_4440_81E9_E2B7836B2091" name="is an inseparable part of">
+				<source xmi:idref="EAID_870C07DC_A6D8_470C_95EF_333FE85D85D2">
+					<model ea_localid="8688" type="Class" name="SugarPortion"/>
+					<role name="Component" visibility="Public"/>
+					<type multiplicity="0..1" aggregation="none"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115">
+					<model ea_localid="8687" type="Class" name="TeaPortion"/>
+					<role name="Composite" visibility="Public"/>
+					<type aggregation="composite"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6917"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: Component(s).SugarPortion -[is an inseparable part of]-&gt; TeaPortion.Composite.&#xA;&#xA;SugarPortion end — role: Component, multiplicity 0..1&#xA;(a TeaPortion contains at most one SugarPortion —&#xA;unsweetened tea is perfectly valid, hence the lower bound of 0.)&#xA;&#xA;TeaPortion end — role: Composite, multiplicity 1 (default, not shown)&#xA;(a dissolved SugarPortion belongs to exactly one TeaPortion.&#xA;Once dissolved, it cannot exist independently.)&#xA;&#xA;Composition semantics (filled diamond):&#xA;Once sugar is dissolved in tea, it cannot be separated back out&#xA;by any natural means.&#xA;When the tea is drunk, the sugar is consumed along with it.&#xA;A dissolved SugarPortion may belong to at most one TeaPortion&#xA;at any point in time.&#xA;&#xA;Direction of reading is shown on the diagram by a filled triangle&#xA;next to the association name label.&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..1" lt="+Component" mt="is an inseparable part of" rt="+Composite"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+		</connectors>
+		<primitivetypes>
+			<packagedElement xmi:type="uml:Package" xmi:id="EAPrimitiveTypesPackage" name="EA_PrimitiveTypes_Package" visibility="public"/>
+		</primitivetypes>
+		<profiles/>
+		<diagrams>
+			<diagram xmi:id="EAID_ED26B8AD_91A6_4bae_9C52_C374FFDC3134">
+				<model package="EAPK_9A7E0E95_6FD5_4515_976B_921224B43988" localID="8563" owner="EAPK_9A7E0E95_6FD5_4515_976B_921224B43988"/>
+				<properties name="UML_Composition_Tea_Sugar_Glass" type="Logical"/>
+				<project author="Guest" version="1.0" created="2026-03-17 00:28:01" modified="2026-03-17 00:29:58"/>
+				<style1 value="ShowPrivate=1;ShowProtected=1;ShowPublic=1;HideRelationships=0;Locked=0;Border=1;HighlightForeign=1;PackageContents=1;SequenceNotes=0;ScalePrintImage=0;PPgs.cx=0;PPgs.cy=0;DocSize.cx=827;DocSize.cy=1169;ShowDetails=0;Orientation=P;Zoom=100;ShowTags=0;OpParams=1;VisibleAttributeDetail=0;ShowOpRetType=1;ShowIcons=1;CollabNums=0;HideProps=0;ShowReqs=0;ShowCons=0;PaperSize=9;HideParents=0;UseAlias=0;HideAtts=0;HideOps=0;HideStereo=0;HideElemStereo=0;ShowTests=0;ShowMaint=0;ConnectorNotation=UML 2.1;ExplicitNavigability=0;ShowShape=1;AllDockable=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;m_bElementClassifier=1;SPT=1;ShowNotes=0;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;"/>
+				<style2 value="ExcludeRTF=0;DocAll=0;HideQuals=0;AttPkg=1;ShowTests=0;ShowMaint=0;SuppressFOC=1;MatrixActive=0;SwimlanesActive=1;KanbanActive=0;MatrixLineWidth=1;MatrixLineClr=0;MatrixLocked=0;TConnectorNotation=UML 2.1;TExplicitNavigability=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;m_bElementClassifier=1;SPT=1;MDGDgm=;STBLDgm=;ShowNotes=0;VisibleAttributeDetail=0;ShowOpRetType=1;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;SuppressedCompartments=;Theme=:119;SaveTag=6FD39720;"/>
+				<swimlanes value="locked=false;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;ufCol=-1;hl=1;ufh=0;hh=0;cls=0;bw=0;hli=0;bro=0;SwimlaneFont=lfh:-13,lfw:0,lfi:0,lfu:0,lfs:0,lfface:Calibri,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;"/>
+				<matrixitems value="locked=false;matrixactive=false;swimlanesactive=true;kanbanactive=false;width=1;clrLine=0;"/>
+				<extendedProperties/>
+				<persistentstyle value="DGS=On=0:CNT=8:W=120:H=40:SG=0:SGH=0:AEB=0:;AR=0;DCL=0;Swimlanes=locked=false;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;ufCol=-1;hl=1;ufh=0;hh=0;cls=0;bw=0;hli=0;bro=0;SwimlaneFont=lfh:-13,lfw:0,lfi:0,lfu:0,lfs:0,lfface:Calibri,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;;"/>
+				<xrefs/>
+				<elements>
+					<element geometry="Left=42;Top=196;Right=132;Bottom=266;" subject="EAID_C8A1303F_832C_4D70_B3D6_CAD2CC0DD115" seqno="1" style="DUID=033A18E1;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="Left=42;Top=22;Right=132;Bottom=92;" subject="EAID_5547F9B9_7F6B_432B_AB75_A6F6C574AADA" seqno="2" style="DUID=D56E7152;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="Left=336;Top=196;Right=426;Bottom=266;" subject="EAID_870C07DC_A6D8_470C_95EF_333FE85D85D2" seqno="3" style="DUID=378BFF32;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="SX=0;SY=0;EX=0;EY=0;EDGE=4;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=52:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=49:CY=40:OX=32:OY=-15:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=1:ROT=0;LMB=;LRT=CX=48:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=;IRHS=;ILHS=;Path=;" subject="EAID_02011812_67E0_4440_81E9_E2B7836B2091" style="Mode=3;EOID=033A18E1;SOID=378BFF32;Color=-1;LWidth=0;Hidden=0;"/>
+					<element geometry="SX=0;SY=0;EX=0;EY=0;EDGE=1;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=37:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=54:CY=14:OX=10:OY=11:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=1:ROT=0;LMB=;LRT=CX=32:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;IRHS=;ILHS=;Path=;" subject="EAID_32FA0D83_B99D_4CDE_843D_F596C0F0B15B" style="Mode=3;EOID=D56E7152;SOID=033A18E1;Color=-1;LWidth=0;Hidden=0;"/>
+				</elements>
+			</diagram>
+		</diagrams>
+	</xmi:Extension>
+</xmi:XMI>

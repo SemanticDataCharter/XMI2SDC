@@ -79,5 +79,20 @@ def ea_composition_tea_sugar_path(xmi_samples_dir: Path) -> Path:
 
 
 @pytest.fixture
+def ea_lawnmower_aggregation_path(xmi_samples_dir: Path) -> Path:
+    return xmi_samples_dir / "ea_lawnmower_aggregation.xmi"
+
+
+@pytest.fixture
+def ea_lawnmower_complex_path(xmi_samples_dir: Path) -> Path:
+    return xmi_samples_dir / "ea_lawnmower_complex.xmi"
+
+
+@pytest.fixture
+def ea_tea_sugar_glass_complex_path(xmi_samples_dir: Path) -> Path:
+    return xmi_samples_dir / "ea_tea_sugar_glass_complex.xmi"
+
+
+@pytest.fixture
 def generic_xmi_content(generic_xmi_path: Path) -> str:
     return generic_xmi_path.read_text()

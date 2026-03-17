@@ -1,0 +1,374 @@
+<?xml  version='1.0' encoding='windows-1252' ?>
+<xmi:XMI xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1">
+	<xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5" exporterID="1716"/>
+	<uml:Model xmi:type="uml:Model" name="EA_Model" visibility="public">
+		<packagedElement xmi:type="uml:Package" xmi:id="EAPK_3538736A_DC65_4607_A383_3299C9820DDC" name="UML_LawnMower_Extended" visibility="public">
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895" name="Belt" visibility="public"/>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_008C4069_6B1C_4580_B903_AF0338CA14C5" name="is part of" visibility="public">
+				<memberEnd xmi:idref="EAID_dst8C4069_6B1C_4580_B903_AF0338CA14C5"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dst8C4069_6B1C_4580_B903_AF0338CA14C5" name="Part Carrier" visibility="public" association="EAID_008C4069_6B1C_4580_B903_AF0338CA14C5" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000001__6B1C_4580_B903_AF0338CA14C5" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000002__6B1C_4580_B903_AF0338CA14C5" value="1"/>
+				</ownedEnd>
+				<memberEnd xmi:idref="EAID_src8C4069_6B1C_4580_B903_AF0338CA14C5"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_src8C4069_6B1C_4580_B903_AF0338CA14C5" name="Field-Replaceable Part" visibility="public" association="EAID_008C4069_6B1C_4580_B903_AF0338CA14C5" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="shared">
+					<type xmi:idref="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000015__6B1C_4580_B903_AF0338CA14C5" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000016__6B1C_4580_B903_AF0338CA14C5" value="2"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_459F2855_BD04_4318_8CF1_6ACC0F23E8E9" name="is part of" visibility="public">
+				<memberEnd xmi:idref="EAID_dst9F2855_BD04_4318_8CF1_6ACC0F23E8E9"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dst9F2855_BD04_4318_8CF1_6ACC0F23E8E9" name="Part Carrier" visibility="public" association="EAID_459F2855_BD04_4318_8CF1_6ACC0F23E8E9" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000003__BD04_4318_8CF1_6ACC0F23E8E9" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000004__BD04_4318_8CF1_6ACC0F23E8E9" value="1"/>
+				</ownedEnd>
+				<memberEnd xmi:idref="EAID_src9F2855_BD04_4318_8CF1_6ACC0F23E8E9"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_src9F2855_BD04_4318_8CF1_6ACC0F23E8E9" name="Field-Replaceable Part" visibility="public" association="EAID_459F2855_BD04_4318_8CF1_6ACC0F23E8E9" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="shared">
+					<type xmi:idref="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000007__BD04_4318_8CF1_6ACC0F23E8E9" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000008__BD04_4318_8CF1_6ACC0F23E8E9" value="2"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_151AEBA6_D103_4088_8433_D286F3A7A6A9" name="Blade" visibility="public"/>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_7E586F12_8725_491B_9DCA_BBA412D04441" name="is part of" visibility="public">
+				<memberEnd xmi:idref="EAID_dst586F12_8725_491B_9DCA_BBA412D04441"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dst586F12_8725_491B_9DCA_BBA412D04441" name="Part Carrier" visibility="public" association="EAID_7E586F12_8725_491B_9DCA_BBA412D04441" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000005__8725_491B_9DCA_BBA412D04441" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000006__8725_491B_9DCA_BBA412D04441" value="1"/>
+				</ownedEnd>
+				<memberEnd xmi:idref="EAID_src586F12_8725_491B_9DCA_BBA412D04441"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_src586F12_8725_491B_9DCA_BBA412D04441" name="Field-Replaceable Part" visibility="public" association="EAID_7E586F12_8725_491B_9DCA_BBA412D04441" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="shared">
+					<type xmi:idref="EAID_151AEBA6_D103_4088_8433_D286F3A7A6A9"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000009__8725_491B_9DCA_BBA412D04441" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000010__8725_491B_9DCA_BBA412D04441" value="1"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE" name="CuttingDeck" visibility="public"/>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_38933961_08BE_48F6_8A41_54C5C2F9D468" name="contains" visibility="public">
+				<memberEnd xmi:idref="EAID_dst933961_08BE_48F6_8A41_54C5C2F9D468"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dst933961_08BE_48F6_8A41_54C5C2F9D468" name="End Item" visibility="public" association="EAID_38933961_08BE_48F6_8A41_54C5C2F9D468" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683"/>
+				</ownedEnd>
+				<memberEnd xmi:idref="EAID_src933961_08BE_48F6_8A41_54C5C2F9D468"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_src933961_08BE_48F6_8A41_54C5C2F9D468" name="Integral Assembly" visibility="public" association="EAID_38933961_08BE_48F6_8A41_54C5C2F9D468" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="composite">
+					<type xmi:idref="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000011__08BE_48F6_8A41_54C5C2F9D468" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000012__08BE_48F6_8A41_54C5C2F9D468" value="2"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683" name="LawnMower" visibility="public"/>
+			<packagedElement xmi:type="uml:Association" xmi:id="EAID_5FA1D2AD_4D4F_4CEB_AF42_63284D204F77" name="contains" visibility="public">
+				<memberEnd xmi:idref="EAID_dstA1D2AD_4D4F_4CEB_AF42_63284D204F77"/>
+				<memberEnd xmi:idref="EAID_srcA1D2AD_4D4F_4CEB_AF42_63284D204F77"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_srcA1D2AD_4D4F_4CEB_AF42_63284D204F77" name="Integral Assembly" visibility="public" association="EAID_5FA1D2AD_4D4F_4CEB_AF42_63284D204F77" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="composite">
+					<type xmi:idref="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000013__4D4F_4CEB_AF42_63284D204F77" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000014__4D4F_4CEB_AF42_63284D204F77" value="1"/>
+				</ownedEnd>
+				<ownedEnd xmi:type="uml:Property" xmi:id="EAID_dstA1D2AD_4D4F_4CEB_AF42_63284D204F77" name="End Item" visibility="public" association="EAID_5FA1D2AD_4D4F_4CEB_AF42_63284D204F77" isStatic="false" isReadOnly="true" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false" aggregation="none">
+					<type xmi:idref="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683"/>
+				</ownedEnd>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E" name="Transmission" visibility="public"/>
+		</packagedElement>
+	</uml:Model>
+	<xmi:Extension extender="Enterprise Architect" extenderID="6.5">
+		<elements>
+			<element xmi:idref="EAPK_3538736A_DC65_4607_A383_3299C9820DDC" xmi:type="uml:Package" name="UML_LawnMower_Extended" scope="public">
+				<model package2="EAID_3538736A_DC65_4607_A383_3299C9820DDC" package="EAPK_62F7F2D0_5402_4e31_8A22_93B98A809F99" tpos="0" ea_localid="27" ea_eleType="package"/>
+				<properties isSpecification="false" sType="Package" nType="0" scope="public"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:46:42" modified="2026-03-16 21:46:42" complexity="1" status="Proposed"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="Model"/>
+				<packageproperties version="1.0" tpos="0"/>
+				<paths/>
+				<times created="2026-03-16 21:46:42" modified="2026-03-16 21:46:42"/>
+				<flags iscontrolled="0" isprotected="0" batchsave="0" batchload="0" usedtd="0" logxml="0"/>
+			</element>
+			<element xmi:idref="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895" xmi:type="uml:Class" name="Belt" scope="public">
+				<model package="EAPK_3538736A_DC65_4607_A383_3299C9820DDC" tpos="0" ea_localid="8695" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:46:42" modified="2026-03-16 21:46:42"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_LawnMower_Extended"/>
+				<links>
+					<Association xmi:id="EAID_008C4069_6B1C_4580_B903_AF0338CA14C5" start="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895" end="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E"/>
+					<Association xmi:id="EAID_459F2855_BD04_4318_8CF1_6ACC0F23E8E9" start="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895" end="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE"/>
+				</links>
+			</element>
+			<element xmi:idref="EAID_151AEBA6_D103_4088_8433_D286F3A7A6A9" xmi:type="uml:Class" name="Blade" scope="public">
+				<model package="EAPK_3538736A_DC65_4607_A383_3299C9820DDC" tpos="0" ea_localid="8696" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:46:42" modified="2026-03-16 21:46:42"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_LawnMower_Extended"/>
+				<links>
+					<Association xmi:id="EAID_7E586F12_8725_491B_9DCA_BBA412D04441" start="EAID_151AEBA6_D103_4088_8433_D286F3A7A6A9" end="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE"/>
+				</links>
+			</element>
+			<element xmi:idref="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE" xmi:type="uml:Class" name="CuttingDeck" scope="public">
+				<model package="EAPK_3538736A_DC65_4607_A383_3299C9820DDC" tpos="0" ea_localid="8693" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:46:42" modified="2026-03-16 21:46:42"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_LawnMower_Extended"/>
+				<links>
+					<Association xmi:id="EAID_38933961_08BE_48F6_8A41_54C5C2F9D468" start="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE" end="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683"/>
+					<Association xmi:id="EAID_459F2855_BD04_4318_8CF1_6ACC0F23E8E9" start="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895" end="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE"/>
+					<Association xmi:id="EAID_7E586F12_8725_491B_9DCA_BBA412D04441" start="EAID_151AEBA6_D103_4088_8433_D286F3A7A6A9" end="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE"/>
+				</links>
+			</element>
+			<element xmi:idref="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683" xmi:type="uml:Class" name="LawnMower" scope="public">
+				<model package="EAPK_3538736A_DC65_4607_A383_3299C9820DDC" tpos="0" ea_localid="8692" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:46:42" modified="2026-03-16 21:46:42"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_LawnMower_Extended"/>
+				<links>
+					<Association xmi:id="EAID_38933961_08BE_48F6_8A41_54C5C2F9D468" start="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE" end="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683"/>
+					<Association xmi:id="EAID_5FA1D2AD_4D4F_4CEB_AF42_63284D204F77" start="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E" end="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683"/>
+				</links>
+			</element>
+			<element xmi:idref="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E" xmi:type="uml:Class" name="Transmission" scope="public">
+				<model package="EAPK_3538736A_DC65_4607_A383_3299C9820DDC" tpos="0" ea_localid="8694" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Yuriy" version="1.0" phase="1.0" created="2026-03-16 21:46:42" modified="2026-03-16 21:46:42"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="UML_LawnMower_Extended"/>
+				<links>
+					<Association xmi:id="EAID_5FA1D2AD_4D4F_4CEB_AF42_63284D204F77" start="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E" end="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683"/>
+					<Association xmi:id="EAID_008C4069_6B1C_4580_B903_AF0338CA14C5" start="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895" end="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E"/>
+				</links>
+			</element>
+		</elements>
+		<connectors>
+			<connector xmi:idref="EAID_008C4069_6B1C_4580_B903_AF0338CA14C5" name="is part of">
+				<source xmi:idref="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895">
+					<model ea_localid="8695" type="Class" name="Belt"/>
+					<role name="Field-Replaceable Part" visibility="Public"/>
+					<type multiplicity="0..2" aggregation="none"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E">
+					<model ea_localid="8694" type="Class" name="Transmission"/>
+					<role name="Part Carrier" visibility="Public"/>
+					<type multiplicity="0..1" aggregation="shared"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6922"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: FieldReplaceablePart(s).Belt -[is part of]-&gt; Transmission(s).PartCarrier.&#xA;&#xA;Belt end — role: Field-Replaceable Part, multiplicity 0..2&#xA;(a Transmission may carry no belt (0), one belt (1), or two belts (2).)&#xA;&#xA;Transmission end — role: Part Carrier, multiplicity 0..1&#xA;(a Belt belongs to at most one Transmission at a time,&#xA;or exists freely as a spare (0).)&#xA;&#xA;Aggregation semantics (hollow diamond):&#xA;The Belt is a Line-Replaceable Unit (LRU).&#xA;The same belt type that fits the CuttingDeck also fits the Transmission.&#xA;This shared aggregation models that interchangeability explicitly.&#xA;&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..2" lt="+Field-Replaceable Part" mt="is part of" rb="0..1" rt="+Part Carrier"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+			<connector xmi:idref="EAID_459F2855_BD04_4318_8CF1_6ACC0F23E8E9" name="is part of">
+				<source xmi:idref="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895">
+					<model ea_localid="8695" type="Class" name="Belt"/>
+					<role name="Field-Replaceable Part" visibility="Public"/>
+					<type multiplicity="0..2" aggregation="none"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE">
+					<model ea_localid="8693" type="Class" name="CuttingDeck"/>
+					<role name="Part Carrier" visibility="Public"/>
+					<type multiplicity="0..1" aggregation="shared"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6921"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: FieldReplaceablePart(s).Belt -[is part of]-&gt; CuttingDeck(s).PartCarrier.&#xA;&#xA;Belt end — role: Field-Replaceable Part, multiplicity 0..2&#xA;(a CuttingDeck may carry no belt (0) — e.g. during replacement —&#xA;one belt on a standard deck (1),&#xA;or two belts on a dual-drive deck (2).)&#xA;&#xA;CuttingDeck end — role: Part Carrier, multiplicity 0..1&#xA;(a Belt belongs to at most one CuttingDeck at a time,&#xA;or exists freely as a spare in the barn or workshop (0).)&#xA;&#xA;Aggregation semantics (hollow diamond):&#xA;The Belt is a Line-Replaceable Unit (LRU) — the farmer replaces it in the field.&#xA;A Belt can exist independently of any CuttingDeck.&#xA;Note: the same Belt class is also used in the Transmission (see separate association).&#xA;This reflects that the same belt type may be fitted to either assembly,&#xA;though one physical belt can only be in one place at a time.&#xA;&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..2" lt="+Field-Replaceable Part" mt="is part of" rb="0..1" rt="+Part Carrier"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+			<connector xmi:idref="EAID_7E586F12_8725_491B_9DCA_BBA412D04441" name="is part of">
+				<source xmi:idref="EAID_151AEBA6_D103_4088_8433_D286F3A7A6A9">
+					<model ea_localid="8696" type="Class" name="Blade"/>
+					<role name="Field-Replaceable Part" visibility="Public" targetScope="instance"/>
+					<type multiplicity="0..1" aggregation="none" containment="Unspecified"/>
+					<constraints/>
+					<modifiers isOrdered="false" changeable="none" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;AllowDuplicates=0;Derived=0;Union=0;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE">
+					<model ea_localid="8693" type="Class" name="CuttingDeck"/>
+					<role name="Part Carrier" visibility="Public"/>
+					<type multiplicity="0..1" aggregation="shared"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6923"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: FieldReplaceablePart(s).Blade -[is part of]-&gt; CuttingDeck(s).PartCarrier.&#xA;&#xA;Blade end — role: Field-Replaceable Part, multiplicity 0..2&#xA;(a CuttingDeck may carry no blade (0) — during replacement or servicing —&#xA;one blade on a standard deck (1),&#xA;or two blades on a wide-cut deck (2).)&#xA;&#xA;CuttingDeck end — role: Part Carrier, multiplicity 0..1&#xA;(a Blade belongs to at most one CuttingDeck at a time,&#xA;or exists freely as a spare — being sharpened or stored (0).)&#xA;&#xA;Aggregation semantics (hollow diamond):&#xA;The Blade is a Line-Replaceable Unit (LRU) — the farmer replaces it in the field.&#xA;A Blade can exist independently of any CuttingDeck.&#xA;&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..1" lt="+Field-Replaceable Part" mt="is part of" rb="0..1" rt="+Part Carrier"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+			<connector xmi:idref="EAID_38933961_08BE_48F6_8A41_54C5C2F9D468" name="contains">
+				<source xmi:idref="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE">
+					<model ea_localid="8693" type="Class" name="CuttingDeck"/>
+					<role name="Integral Assembly" visibility="Public"/>
+					<type multiplicity="0..2" aggregation="none"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683">
+					<model ea_localid="8692" type="Class" name="LawnMower"/>
+					<role name="End Item" visibility="Public"/>
+					<type aggregation="composite"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6919"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: IntegralAssembly(ies).CuttingDeck -[contains]-&amp;gt; LawnMower.EndItem.&#xA;&#xA;CuttingDeck end — role: Integral Assembly, multiplicity 0..2&#xA;(a LawnMower may have no cutting deck (0) — e.g. stripped unit in transit —&#xA;one deck on a single-deck mower (1),&#xA;or two decks on a dual-deck mower (2).)&#xA;&#xA;LawnMower end — role: End Item, multiplicity 1 (default, not shown)&#xA;(a CuttingDeck belongs to exactly one LawnMower.)&#xA;&#xA;Composition semantics (filled diamond):&#xA;The CuttingDeck is an Integral Assembly — a Shop-Replaceable Unit (SRU).&#xA;Under normal farm operating conditions, the farmer does not remove the deck.&#xA;Deck removal requires specialist tools and is carried out at a service centre only.&#xA;The CuttingDeck cannot exist independently of the LawnMower in this model.&#xA;&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..2" lt="+Integral Assembly" mt="contains" rt="+End Item"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+			<connector xmi:idref="EAID_5FA1D2AD_4D4F_4CEB_AF42_63284D204F77" name="contains">
+				<source xmi:idref="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E">
+					<model ea_localid="8694" type="Class" name="Transmission"/>
+					<role name="Integral Assembly" visibility="Public"/>
+					<type multiplicity="0..1" aggregation="none"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</source>
+				<target xmi:idref="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683">
+					<model ea_localid="8692" type="Class" name="LawnMower"/>
+					<role name="End Item" visibility="Public"/>
+					<type aggregation="composite"/>
+					<constraints/>
+					<modifiers isOrdered="false" isNavigable="false"/>
+					<style value="Owned=0;Navigable=Unspecified;"/>
+					<documentation/>
+					<xrefs/>
+					<tags/>
+				</target>
+				<model ea_localid="6920"/>
+				<properties ea_type="Association" direction="Unspecified"/>
+				<modifiers isRoot="false" isLeaf="false"/>
+				<parameterSubstitutions/>
+				<documentation value="Reading: IntegralAssembly(ies).Transmission -[contains]-&gt; LawnMower.EndItem.&#xA;&#xA;Transmission end — role: Integral Assembly, multiplicity 0..1&#xA;(a LawnMower has exactly one Transmission (1) in normal configuration,&#xA;or none (0) if stripped for transport or overhaul.)&#xA;&#xA;LawnMower end — role: End Item, multiplicity 1 (default, not shown)&#xA;(a Transmission belongs to exactly one LawnMower.)&#xA;&#xA;Composition semantics (filled diamond):&#xA;The Transmission is an Integral Assembly — a Shop-Replaceable Unit (SRU).&#xA;The farmer does not remove or service the transmission in the field.&#xA;Service requires workshop conditions and specialist tools.&#xA;&#xA;The association direction itself is Unspecified."/>
+				<appearance linemode="3" linecolor="0" linewidth="0" seqno="0" headStyle="0" lineStyle="0"/>
+				<labels lb="0..1" lt="+Integral Assembly" mt="contains" rt="+End Item"/>
+				<extendedProperties/>
+				<style/>
+				<xrefs/>
+				<tags/>
+			</connector>
+		</connectors>
+		<primitivetypes>
+			<packagedElement xmi:type="uml:Package" xmi:id="EAPrimitiveTypesPackage" name="EA_PrimitiveTypes_Package" visibility="public"/>
+		</primitivetypes>
+		<profiles/>
+		<diagrams>
+			<diagram xmi:id="EAID_D28971BC_6708_43dc_882A_974566959019">
+				<model package="EAPK_3538736A_DC65_4607_A383_3299C9820DDC" localID="8564" owner="EAPK_3538736A_DC65_4607_A383_3299C9820DDC"/>
+				<properties name="UML_LawnMower_Extended" type="Logical"/>
+				<project author="Guest" version="1.0" created="2026-03-17 00:51:15" modified="2026-03-17 01:49:04"/>
+				<style1 value="ShowPrivate=1;ShowProtected=1;ShowPublic=1;HideRelationships=0;Locked=0;Border=1;HighlightForeign=1;PackageContents=1;SequenceNotes=0;ScalePrintImage=0;PPgs.cx=0;PPgs.cy=0;DocSize.cx=827;DocSize.cy=1169;ShowDetails=0;Orientation=P;Zoom=100;ShowTags=0;OpParams=1;VisibleAttributeDetail=0;ShowOpRetType=1;ShowIcons=1;CollabNums=0;HideProps=0;ShowReqs=0;ShowCons=0;PaperSize=9;HideParents=0;UseAlias=0;HideAtts=0;HideOps=0;HideStereo=0;HideElemStereo=0;ShowTests=0;ShowMaint=0;ConnectorNotation=UML 2.1;ExplicitNavigability=0;ShowShape=1;AllDockable=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;m_bElementClassifier=1;SPT=1;ShowNotes=0;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;"/>
+				<style2 value="ExcludeRTF=0;DocAll=0;HideQuals=0;AttPkg=1;ShowTests=0;ShowMaint=0;SuppressFOC=1;MatrixActive=0;SwimlanesActive=1;KanbanActive=0;MatrixLineWidth=1;MatrixLineClr=0;MatrixLocked=0;TConnectorNotation=UML 2.1;TExplicitNavigability=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;m_bElementClassifier=1;SPT=1;MDGDgm=;STBLDgm=;ShowNotes=0;VisibleAttributeDetail=0;ShowOpRetType=1;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;SuppressedCompartments=;Theme=:119;SaveTag=333EC691;"/>
+				<swimlanes value="locked=false;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;ufCol=-1;hl=1;ufh=0;hh=0;cls=0;bw=0;hli=0;bro=0;SwimlaneFont=lfh:-13,lfw:0,lfi:0,lfu:0,lfs:0,lfface:Calibri,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;"/>
+				<matrixitems value="locked=false;matrixactive=false;swimlanesactive=true;kanbanactive=false;width=1;clrLine=0;"/>
+				<extendedProperties/>
+				<persistentstyle value="DGS=On=0:CNT=8:W=120:H=40:SG=0:SGH=0:AEB=0:;AR=0;DCL=0;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;ufCol=-1;hl=1;ufh=0;hh=0;cls=0;bw=0;hli=0;bro=0;SwimlaneFont=lfh:-13,lfw:0,lfi:0,lfu:0,lfs:0,lfface:Calibri,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;;Swimlanes=locked=false;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;ufCol=-1;hl=1;ufh=0;hh=0;cls=0;bw=0;hli=0;bro=0;SwimlaneFont=lfh:-13,lfw:0,lfi:0,lfu:0,lfs:0,lfface:Calibri,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;;"/>
+				<xrefs/>
+				<elements>
+					<element geometry="Left=171;Top=159;Right=261;Bottom=229;" subject="EAID_24CC4638_9E86_4127_B74B_B76EC214D45E" seqno="1" style="DUID=8AB9465F;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="Left=63;Top=22;Right=153;Bottom=92;" subject="EAID_488E8494_AB30_4E88_85F3_31F02A2BD683" seqno="2" style="DUID=7343BDB4;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="Left=171;Top=293;Right=261;Bottom=363;" subject="EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE" seqno="3" style="DUID=E3D635E1;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="Left=445;Top=160;Right=535;Bottom=230;" subject="EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895" seqno="4" style="DUID=94DBD112;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="Left=445;Top=293;Right=535;Bottom=363;" subject="EAID_151AEBA6_D103_4088_8433_D286F3A7A6A9" seqno="5" style="DUID=3FB92EAB;NSL=0;BCol=-1;BFol=-1;LCol=-1;LWth=-1;fontsz=0;bold=0;black=0;italic=0;ul=0;charset=0;pitch=0;"/>
+					<element geometry="SX=-3;SY=-30;EX=-3;EY=-30;EDGE=4;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=51:CY=40:OX=41:OY=-30:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=35:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=1:ROT=0;LMB=;LRT=CX=50:CY=14:OX=-7:OY=37:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;IRHS=;ILHS=;Path=;" subject="EAID_7E586F12_8725_491B_9DCA_BBA412D04441" style="Mode=3;EOID=E3D635E1;SOID=3FB92EAB;Color=-1;LWidth=0;Hidden=0;"/>
+					<element geometry="SX=0;SY=0;EX=0;EY=0;EDGE=4;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=94:CY=14:OX=0:OY=0:HDN=1:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=35:CY=14:OX=-33:OY=-6:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=1:ROT=0;LMB=;LRT=CX=27:CY=27:OX=-45:OY=99:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=CX=17:CY=14:OX=-47:OY=8:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;IRHS=;ILHS=;Path=311:-195$311:-328$;" subject="EAID_459F2855_BD04_4318_8CF1_6ACC0F23E8E9" style="Mode=3;EOID=E3D635E1;SOID=94DBD112;Color=-1;LWidth=0;TREE=H;Hidden=0;"/>
+					<element geometry="SX=0;SY=0;EX=0;EY=0;EDGE=4;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=51:CY=40:OX=39:OY=-27:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=35:CY=14:OX=-31:OY=-8:HDN=1:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMB=;LRT=CX=50:CY=14:OX=-42:OY=-11:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=CX=17:CY=14:OX=-45:OY=104:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;IRHS=;ILHS=;Path=311:-194$311:-194$;" subject="EAID_008C4069_6B1C_4580_B903_AF0338CA14C5" style="Mode=3;EOID=8AB9465F;SOID=94DBD112;Color=-1;LWidth=0;TREE=H;Hidden=0;"/>
+					<element geometry="SX=0;SY=0;EX=0;EY=0;EDGE=4;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=40:CY=27:OX=41:OY=-13:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=34:CY=14:OX=59:OY=-57:HDN=1:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMB=;LRT=CX=42:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=;IRHS=;ILHS=;Path=108:-328$;" subject="EAID_38933961_08BE_48F6_8A41_54C5C2F9D468" style="Mode=3;EOID=7343BDB4;SOID=E3D635E1;Color=-1;LWidth=0;TREE=LV;Hidden=0;"/>
+					<element geometry="SX=0;SY=0;EX=0;EY=0;EDGE=4;$LLB=CX=17:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LLT=CX=40:CY=27:OX=38:OY=-14:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LMT=CX=34:CY=14:OX=-9:OY=-1:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=-1:ROT=0;LMB=;LRT=CX=42:CY=14:OX=0:OY=0:HDN=0:BLD=0:ITA=0:UND=0:CLR=-1:ALN=1:DIR=0:ROT=0;LRB=;IRHS=;ILHS=;Path=108:-194$;" subject="EAID_5FA1D2AD_4D4F_4CEB_AF42_63284D204F77" style="Mode=3;EOID=7343BDB4;SOID=8AB9465F;Color=-1;LWidth=0;TREE=LV;Hidden=0;"/>
+				</elements>
+			</diagram>
+		</diagrams>
+	</xmi:Extension>
+</xmi:XMI>
