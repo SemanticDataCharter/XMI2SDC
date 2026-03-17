@@ -291,10 +291,10 @@ async def _run_convert(config, xmi_file: str, model_name: str | None, output: st
 @click.option("--title", required=True, help="Title for the new data model.")
 @click.option("--description", default="", help="Description for the data model.")
 @click.option(
-    "--token",
+    "--api-key",
     default=None,
-    envvar="SDCSTUDIO_TOKEN",
-    help="SDCStudio API token.  [env: SDCSTUDIO_TOKEN]",
+    envvar="SDCSTUDIO_API_KEY",
+    help="SDCStudio API key.  [env: SDCSTUDIO_API_KEY]",
 )
 @click.option(
     "--base-url",
@@ -313,7 +313,7 @@ def assemble(
     mapping_json: str,
     title: str,
     description: str,
-    token: str | None,
+    api_key: str | None,
     base_url: str | None,
     timeout: int,
 ) -> None:
@@ -326,14 +326,14 @@ def assemble(
         raise click.ClickException(str(exc)) from exc
 
     # CLI overrides
-    if token:
-        config.sdcstudio.token = token
+    if api_key:
+        config.sdcstudio.api_key = api_key
     if base_url:
         config.sdcstudio.base_url = base_url
 
-    if not config.sdcstudio.token:
+    if not config.sdcstudio.api_key:
         raise click.ClickException(
-            "API token required. Use --token or set SDCSTUDIO_TOKEN env var."
+            "API key required. Use --api-key or set SDCSTUDIO_API_KEY env var."
         )
 
     asyncio.run(_run_assemble(config, mapping_json, title, description, timeout))

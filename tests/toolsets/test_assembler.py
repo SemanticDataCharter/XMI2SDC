@@ -22,7 +22,7 @@ def assembler(tmp_path):
     config = XMI2SDCConfig(
         cache={"root": str(tmp_path / "cache")},
         audit={"path": str(tmp_path / "cache" / "audit.jsonl")},
-        sdcstudio={"base_url": "http://test:8000", "token": "test-token"},
+        sdcstudio={"base_url": "http://test:8000", "api_key": "test-token"},
     )
     return SdcAssemblerToolset(config=config)
 

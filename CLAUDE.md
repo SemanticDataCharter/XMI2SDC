@@ -178,6 +178,7 @@ output:
 
 ```bash
 xmi2sdc convert FILE       # Parse XMI and produce SDC4 mapping plan
+xmi2sdc assemble FILE      # Submit mapping plan to SDCStudio Assembly API
 xmi2sdc serve --mcp AGENT  # Start MCP stdio server for an agent toolset
 xmi2sdc info               # Display config summary and agent inventory
 xmi2sdc validate-config    # Validate configuration file
