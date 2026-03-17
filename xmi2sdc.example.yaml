@@ -1,0 +1,14 @@
+sdcstudio:
+  base_url: "http://localhost:8000"
+  api_key: "${SDC_API_KEY}"          # Set env var or replace with token
+
+cache:
+  root: ".xmi2sdc-cache"
+  ttl_hours: 24
+
+audit:
+  path: ".xmi2sdc-cache/audit.jsonl"
+  log_level: "standard"              # "standard" or "verbose"
+
+output:
+  directory: "./output"
