@@ -1,0 +1,94 @@
+{
+  "model_name": "ea_lawnmower_complex",
+  "dialect": "sparx_ea",
+  "components": [],
+  "clusters": [
+    {
+      "cluster_name": "Belt",
+      "source_xmi_id": "EAID_C1ED3D00_0726_4755_9E0C_BDB0FA5DC895",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "Blade",
+      "source_xmi_id": "EAID_151AEBA6_D103_4088_8433_D286F3A7A6A9",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "CuttingDeck",
+      "source_xmi_id": "EAID_BF5D1DE8_6988_490E_A4EA_FC9FEC823DCE",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "LawnMower",
+      "source_xmi_id": "EAID_488E8494_AB30_4E88_85F3_31F02A2BD683",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "cluster_name": "Transmission",
+      "source_xmi_id": "EAID_24CC4638_9E86_4127_B74B_B76EC214D45E",
+      "description": "",
+      "component_refs": []
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "CuttingDeck",
+      "source_xmi_id": "EAID_459F2855_BD04_4318_8CF1_6ACC0F23E8E9",
+      "description": "Reading: FieldReplaceablePart(s).Belt -[is part of]-> CuttingDeck(s).PartCarrier.\n\nBelt end \u2014 role: Field-Replaceable Part, multiplicity 0..2\n(a CuttingDeck may carry no belt (0) \u2014 e.g. during replacement \u2014\none belt on a standard deck (1),\nor two belts on a dual-drive deck (2).)\n\nCuttingDeck end \u2014 role: Part Carrier, multiplicity 0..1\n(a Belt belongs to at most one CuttingDeck at a time,\nor exists freely as a spare (0).)\n\nAggregation semantics (hollow diamond):\nThe Belt is a Line-Replaceable Unit (LRU).\nA Belt can exist independently of any CuttingDeck.",
+      "component_refs": [
+        "Belt"
+      ],
+      "containment_type": "aggregation"
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "CuttingDeck",
+      "source_xmi_id": "EAID_7E586F12_8725_491B_9DCA_BBA412D04441",
+      "description": "Reading: FieldReplaceablePart(s).Blade -[is part of]-> CuttingDeck(s).PartCarrier.\n\nBlade end \u2014 role: Field-Replaceable Part, multiplicity 0..1\n(a CuttingDeck may carry no blade (0) \u2014 during replacement or servicing \u2014\nor one blade on a standard deck (1).)\n\nCuttingDeck end \u2014 role: Part Carrier, multiplicity 0..1\n(a Blade belongs to at most one CuttingDeck at a time,\nor exists freely as a spare (0).)\n\nAggregation semantics (hollow diamond):\nThe Blade is a Line-Replaceable Unit (LRU).\nA Blade can exist independently of any CuttingDeck.",
+      "component_refs": [
+        "Blade"
+      ],
+      "containment_type": "aggregation"
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "Transmission",
+      "source_xmi_id": "EAID_008C4069_6B1C_4580_B903_AF0338CA14C5",
+      "description": "Reading: FieldReplaceablePart(s).Belt -[is part of]-> Transmission(s).PartCarrier.\n\nBelt end \u2014 role: Field-Replaceable Part, multiplicity 0..2\n(a Transmission may carry no belt (0), one belt (1), or two belts (2).)\n\nTransmission end \u2014 role: Part Carrier, multiplicity 0..1\n(a Belt belongs to at most one Transmission at a time,\nor exists freely as a spare (0).)\n\nAggregation semantics (hollow diamond):\nThe Belt is a Line-Replaceable Unit (LRU).\nThe same belt type that fits the CuttingDeck also fits the Transmission.",
+      "component_refs": [
+        "Belt"
+      ],
+      "containment_type": "aggregation"
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "LawnMower",
+      "source_xmi_id": "EAID_38933961_08BE_48F6_8A41_54C5C2F9D468",
+      "description": "Reading: IntegralAssembly(ies).CuttingDeck -[contains]-> LawnMower.EndItem.\n\nCuttingDeck end \u2014 role: Integral Assembly, multiplicity 0..2\n(a LawnMower may have no cutting deck (0) \u2014 e.g. stripped unit in transit \u2014\none deck on a single-deck mower (1),\nor two decks on a dual-deck mower (2).)\n\nLawnMower end \u2014 role: End Item, multiplicity 1 (default, not shown)\n(a CuttingDeck belongs to exactly one LawnMower.)\n\nComposition semantics (filled diamond):\nThe CuttingDeck is an Integral Assembly \u2014 a Shop-Replaceable Unit (SRU).\nThe CuttingDeck cannot exist independently of the LawnMower in this model.",
+      "component_refs": [
+        "CuttingDeck"
+      ],
+      "containment_type": "composition"
+    },
+    {
+      "is_cluster": true,
+      "cluster_name": "LawnMower",
+      "source_xmi_id": "EAID_5FA1D2AD_4D4F_4CEB_AF42_63284D204F77",
+      "description": "Reading: IntegralAssembly(ies).Transmission -[contains]-> LawnMower.EndItem.\n\nTransmission end \u2014 role: Integral Assembly, multiplicity 0..1\n(a LawnMower has exactly one Transmission (1) in normal configuration,\nor none (0) if stripped for transport or overhaul.)\n\nLawnMower end \u2014 role: End Item, multiplicity 1 (default, not shown)\n(a Transmission belongs to exactly one LawnMower.)\n\nComposition semantics (filled diamond):\nThe Transmission is an Integral Assembly \u2014 a Shop-Replaceable Unit (SRU).\nThe farmer does not remove or service the transmission in the field.",
+      "component_refs": [
+        "Transmission"
+      ],
+      "containment_type": "composition"
+    }
+  ],
+  "unmapped": [],
+  "summary": {
+    "total_classes": 5,
+    "total_components": 0,
+    "total_clusters": 10,
+    "total_unmapped": 0
+  }
+}
