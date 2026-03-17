@@ -1,0 +1,74 @@
+# XMI2SDC — Docker Compose for Sovereign Deployment
+#
+# Prerequisites: SDCStudioSov must be running (localhost:8000)
+#
+# Usage:
+#   docker compose -f docker-compose.xmi2sdc.yml up -d --build
+#   docker compose -f docker-compose.xmi2sdc.yml run --rm xmi2sdc info
+#   docker compose -f docker-compose.xmi2sdc.yml run --rm xmi2sdc convert /data/model.xmi
+
+x-telemetry-off: &telemetry-off
+  OTEL_SDK_DISABLED: "true"
+  OTEL_TRACES_EXPORTER: none
+  OTEL_METRICS_EXPORTER: none
+  OTEL_LOGS_EXPORTER: none
+
+services:
+  xmi2sdc:
+    build: .
+    container_name: xmi2sdc
+    volumes:
+      - ./xmi2sdc.yaml:/home/sdc/xmi2sdc.yaml:ro
+      - ./data:/home/sdc/data:ro
+      - ./output:/home/sdc/output
+      - ./.xmi2sdc-cache:/home/sdc/.xmi2sdc-cache
+    network_mode: "host"
+    environment:
+      XMI2SDC_CONFIG: /home/sdc/xmi2sdc.yaml
+      <<: *telemetry-off
+    profiles:
+      - cli
+
+  xmi2sdc-parser:
+    build: .
+    container_name: xmi2sdc-parser
+    volumes:
+      - ./xmi2sdc.yaml:/home/sdc/xmi2sdc.yaml:ro
+      - ./data:/home/sdc/data:ro
+      - ./output:/home/sdc/output
+      - ./.xmi2sdc-cache:/home/sdc/.xmi2sdc-cache
+    network_mode: "host"
+    environment:
+      XMI2SDC_AGENT: parser
+      XMI2SDC_CONFIG: /home/sdc/xmi2sdc.yaml
+      <<: *telemetry-off
+    restart: unless-stopped
+
+  xmi2sdc-mapper:
+    build: .
+    container_name: xmi2sdc-mapper
+    volumes:
+      - ./xmi2sdc.yaml:/home/sdc/xmi2sdc.yaml:ro
+      - ./data:/home/sdc/data:ro
+      - ./output:/home/sdc/output
+      - ./.xmi2sdc-cache:/home/sdc/.xmi2sdc-cache
+    network_mode: "host"
+    environment:
+      XMI2SDC_AGENT: mapper
+      XMI2SDC_CONFIG: /home/sdc/xmi2sdc.yaml
+      <<: *telemetry-off
+    restart: unless-stopped
+
+  xmi2sdc-assembler:
+    build: .
+    container_name: xmi2sdc-assembler
+    volumes:
+      - ./xmi2sdc.yaml:/home/sdc/xmi2sdc.yaml:ro
+      - ./output:/home/sdc/output
+      - ./.xmi2sdc-cache:/home/sdc/.xmi2sdc-cache
+    network_mode: "host"
+    environment:
+      XMI2SDC_AGENT: assembler
+      XMI2SDC_CONFIG: /home/sdc/xmi2sdc.yaml
+      <<: *telemetry-off
+    restart: unless-stopped

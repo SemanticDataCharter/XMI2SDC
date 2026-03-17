@@ -20,6 +20,6 @@ else
     echo "    docker run -v ./config.yaml:/home/sdc/xmi2sdc.yaml:ro IMAGE info"
     echo "    docker run -v ./config.yaml:/home/sdc/xmi2sdc.yaml:ro IMAGE validate-config"
     echo ""
-    echo "Available agents: parser, mapper"
+    echo "Available agents: assembler, mapper, parser"
     exit 1
 fi

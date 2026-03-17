@@ -27,7 +27,7 @@ XMI2SDC is part of the SDC4 ecosystem. Key principles:
 XMI File --> Parser Agent --> ParsedXmiModel --> Mapper Agent --> Mapping Plan JSON
                                                                         |
                                                                         v
-                               Conversion Report <-- Reviewer <-- Assembler --> SDCStudio API
+                                                  Conversion Report <-- Assembler --> SDCStudio API
 ```
 
 ### Agents
@@ -35,13 +35,10 @@ XMI File --> Parser Agent --> ParsedXmiModel --> Mapper Agent --> Mapping Plan J
 | Agent | Tools | LLM | Description |
 |---|---|---|---|
 | parser | 3 | No | Parse XMI files, auto-detect dialect, normalize to intermediate model |
-| analyzer | 3 | Yes | Semantic analysis of class intent, inheritance, associations |
 | mapper | 3 | Edge cases | Apply UML-to-SDC4 type mapping rules, produce mapping plan |
-| reviewer | 2 | Yes | Review mapping completeness, generate conversion report |
 | assembler | 3 | No | Execute mapping plan via SDCStudio Assembly API |
-| orchestrator | -- | Yes | Multi-agent coordinator: parse, analyze, map, review, assemble |
 
-**Key design**: Deterministic operations (parsing, type mapping) are separated from LLM-assisted operations (semantic analysis, edge-case resolution). Failed stages can resume from cache.
+**Key design**: Deterministic operations (parsing, type mapping) are separated from LLM-assisted operations (edge-case resolution). Failed stages can resume from cache.
 
 ### Supported Dialects
 
