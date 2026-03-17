@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001"
+         xmi:version="2.1">
+  <uml:Model xmi:type="uml:Model" xmi:id="model_university" name="UniversityModel">
+
+    <!-- Top-level package: University -->
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg_university" name="University">
+
+      <!-- Sub-package: People -->
+      <packagedElement xmi:type="uml:Package" xmi:id="pkg_people" name="People">
+
+        <!-- Class: Student -->
+        <packagedElement xmi:type="uml:Class" xmi:id="cls_student" name="Student">
+          <ownedComment xmi:type="uml:Comment" body="A person enrolled in courses at the university."/>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_student_id" name="studentId" type="type_string" isID="true">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_student_name" name="name" type="type_string">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+        </packagedElement>
+
+        <!-- Class: Professor -->
+        <packagedElement xmi:type="uml:Class" xmi:id="cls_professor" name="Professor">
+          <ownedComment xmi:type="uml:Comment" body="A faculty member who teaches courses."/>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_prof_id" name="facultyId" type="type_string" isID="true">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_prof_name" name="name" type="type_string">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+        </packagedElement>
+
+      </packagedElement>
+
+      <!-- Sub-package: Academics -->
+      <packagedElement xmi:type="uml:Package" xmi:id="pkg_academics" name="Academics">
+
+        <!-- Class: Course -->
+        <packagedElement xmi:type="uml:Class" xmi:id="cls_course" name="Course">
+          <ownedComment xmi:type="uml:Comment" body="An academic course offered by the university."/>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_course_code" name="courseCode" type="type_string" isID="true">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_course_title" name="title" type="type_string">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_credits" name="credits" type="type_integer">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+        </packagedElement>
+
+        <!-- Class: Textbook -->
+        <packagedElement xmi:type="uml:Class" xmi:id="cls_textbook" name="Textbook">
+          <ownedComment xmi:type="uml:Comment" body="A required textbook for a course."/>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_isbn" name="isbn" type="type_string" isID="true">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="attr_book_title" name="title" type="type_string">
+            <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+          </ownedAttribute>
+        </packagedElement>
+
+      </packagedElement>
+
+    </packagedElement>
+
+    <!-- Association: Composition — Course owns Textbooks -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_course_textbook" name="courseTextbooks">
+      <ownedComment xmi:type="uml:Comment" body="A course owns its required textbooks. Textbooks do not exist independently of the course."/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_course_owner" name="course" type="cls_course" aggregation="composite">
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_textbook" name="textbooks" type="cls_textbook">
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+      </ownedEnd>
+    </packagedElement>
+
+    <!-- Association: Shared aggregation — Professor aggregates Courses -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_prof_course" name="professorCourses">
+      <ownedComment xmi:type="uml:Comment" body="A professor teaches courses. Courses exist independently of the professor."/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_professor" name="professor" type="cls_professor" aggregation="shared">
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_courses" name="courses" type="cls_course">
+        <lowerValue xmi:type="uml:LiteralInteger" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+      </ownedEnd>
+    </packagedElement>
+
+    <!-- Association: Plain — Student enrolls in Course -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_enrollment" name="enrollment">
+      <ownedComment xmi:type="uml:Comment" body="Students enroll in courses. Many-to-many relationship."/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_student" name="student" type="cls_student" aggregation="none">
+        <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+      </ownedEnd>
+      <ownedEnd xmi:type="uml:Property" xmi:id="end_enrolled_course" name="enrolledCourse" type="cls_course" aggregation="none">
+        <lowerValue xmi:type="uml:LiteralInteger" value="0"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" value="*"/>
+      </ownedEnd>
+    </packagedElement>
+
+    <!-- Primitive type stubs -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_string" name="String"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_integer" name="Integer"/>
+  </uml:Model>
+</xmi:XMI>

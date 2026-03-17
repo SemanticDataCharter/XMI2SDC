@@ -805,3 +805,221 @@ async def test_parse_ea_plain_associations_unchanged(parser, it_employment_path)
     for assoc in result["associations"]:
         assert assoc["source"]["aggregation"] == "none"
         assert assoc["target"]["aggregation"] == "none"
+
+
+# --- Generic Inheritance (Vehicle hierarchy) ---
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_dialect(parser, generic_inheritance_path):
+    """Vehicle hierarchy should be detected as GENERIC dialect."""
+    result = await parser.detect_dialect(str(generic_inheritance_path))
+    assert result["dialect"] == "generic_xmi21"
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_classes(parser, generic_inheritance_path):
+    """Should find 3 top-level classes: Vehicle, Car, ElectricCar."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    top_classes = result["top_level_classes"]
+    class_names = sorted(c["name"] for c in top_classes)
+    assert class_names == ["Car", "ElectricCar", "Vehicle"]
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_abstract(parser, generic_inheritance_path):
+    """Vehicle should be abstract; Car and ElectricCar should not."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    by_name = {c["name"]: c for c in result["top_level_classes"]}
+    assert by_name["Vehicle"]["is_abstract"] is True
+    assert by_name["Car"]["is_abstract"] is False
+    assert by_name["ElectricCar"]["is_abstract"] is False
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_chain(parser, generic_inheritance_path):
+    """Generalization chain: ElectricCar -> Car -> Vehicle."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    by_name = {c["name"]: c for c in result["top_level_classes"]}
+    assert by_name["Vehicle"]["parent_xmi_ids"] == []
+    assert by_name["Car"]["parent_xmi_ids"] == ["cls_vehicle"]
+    assert by_name["ElectricCar"]["parent_xmi_ids"] == ["cls_car"]
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_class_documentation(parser, generic_inheritance_path):
+    """Class-level documentation should be extracted."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    by_name = {c["name"]: c for c in result["top_level_classes"]}
+    assert "Abstract base class" in by_name["Vehicle"]["documentation"]
+    assert "passenger car" in by_name["Car"]["documentation"]
+    assert "battery-electric" in by_name["ElectricCar"]["documentation"]
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_attribute_documentation(parser, generic_inheritance_path):
+    """Attribute-level documentation should be extracted."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    by_name = {c["name"]: c for c in result["top_level_classes"]}
+    vehicle_attrs = {a["name"]: a for a in by_name["Vehicle"]["attributes"]}
+    assert "Vehicle Identification Number" in vehicle_attrs["vin"]["documentation"]
+    assert "Manufacturer" in vehicle_attrs["make"]["documentation"]
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_is_id(parser, generic_inheritance_path):
+    """vin attribute should have isID=true."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    by_name = {c["name"]: c for c in result["top_level_classes"]}
+    vehicle_attrs = {a["name"]: a for a in by_name["Vehicle"]["attributes"]}
+    assert vehicle_attrs["vin"]["is_id"] is True
+    assert vehicle_attrs["make"]["is_id"] is False
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_defaults(parser, generic_inheritance_path):
+    """Default values: weight='0.0', doorCount='4'."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    by_name = {c["name"]: c for c in result["top_level_classes"]}
+    vehicle_attrs = {a["name"]: a for a in by_name["Vehicle"]["attributes"]}
+    assert vehicle_attrs["weight"]["default_value"] == "0.0"
+    car_attrs = {a["name"]: a for a in by_name["Car"]["attributes"]}
+    assert car_attrs["doorCount"]["default_value"] == "4"
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_enum_typed_attribute(parser, generic_inheritance_path):
+    """fuelType attribute should resolve type to 'FuelType' (enum name)."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    by_name = {c["name"]: c for c in result["top_level_classes"]}
+    vehicle_attrs = {a["name"]: a for a in by_name["Vehicle"]["attributes"]}
+    assert vehicle_attrs["fuelType"]["type_name"] == "FuelType"
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_enum_literals(parser, generic_inheritance_path):
+    """FuelType enum should have 4 documented literals."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    enums = result["top_level_enumerations"]
+    fuel = next(e for e in enums if e["name"] == "FuelType")
+    literal_names = [lit["name"] for lit in fuel["literals"]]
+    assert literal_names == ["Gasoline", "Diesel", "Electric", "Hybrid"]
+    # All literals should have documentation
+    for lit in fuel["literals"]:
+        assert lit["documentation"] != "", f"{lit['name']} should have documentation"
+
+
+@pytest.mark.asyncio
+async def test_generic_inheritance_vehicle_attributes(parser, generic_inheritance_path):
+    """Vehicle should have 5 attributes with correct types."""
+    result = await parser.parse_xmi_file(str(generic_inheritance_path))
+    by_name = {c["name"]: c for c in result["top_level_classes"]}
+    vehicle = by_name["Vehicle"]
+    assert len(vehicle["attributes"]) == 5
+    attrs = {a["name"]: a["type_name"] for a in vehicle["attributes"]}
+    assert attrs == {
+        "vin": "String",
+        "make": "String",
+        "year": "Integer",
+        "fuelType": "FuelType",
+        "weight": "Float",
+    }
+
+
+# --- Generic Associations (University course system) ---
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_dialect(parser, generic_associations_path):
+    """University model should be detected as GENERIC dialect."""
+    result = await parser.detect_dialect(str(generic_associations_path))
+    assert result["dialect"] == "generic_xmi21"
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_nested_packages(parser, generic_associations_path):
+    """Should have University package with People and Academics sub-packages."""
+    result = await parser.parse_xmi_file(str(generic_associations_path))
+    assert len(result["packages"]) == 1
+    uni_pkg = result["packages"][0]
+    assert uni_pkg["name"] == "University"
+    sub_names = sorted(sp["name"] for sp in uni_pkg["sub_packages"])
+    assert sub_names == ["Academics", "People"]
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_classes_in_subpackages(parser, generic_associations_path):
+    """Classes should be in correct sub-packages."""
+    result = await parser.parse_xmi_file(str(generic_associations_path))
+    uni_pkg = result["packages"][0]
+    sub_by_name = {sp["name"]: sp for sp in uni_pkg["sub_packages"]}
+
+    people_classes = sorted(c["name"] for c in sub_by_name["People"]["classes"])
+    assert people_classes == ["Professor", "Student"]
+
+    academic_classes = sorted(c["name"] for c in sub_by_name["Academics"]["classes"])
+    assert academic_classes == ["Course", "Textbook"]
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_count(parser, generic_associations_path):
+    """Should find 3 associations: 1 composition, 1 shared, 1 plain."""
+    result = await parser.parse_xmi_file(str(generic_associations_path))
+    assert len(result["associations"]) == 3
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_composition(parser, generic_associations_path):
+    """Composition: Course owns Textbook."""
+    result = await parser.parse_xmi_file(str(generic_associations_path))
+    assoc = next(a for a in result["associations"] if a["name"] == "courseTextbooks")
+    src, tgt = assoc["source"], assoc["target"]
+    if src["type_name"] == "Course":
+        course_end, textbook_end = src, tgt
+    else:
+        course_end, textbook_end = tgt, src
+    assert course_end["aggregation"] == "composite"
+    assert textbook_end["aggregation"] == "none"
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_shared(parser, generic_associations_path):
+    """Shared aggregation: Professor aggregates Course."""
+    result = await parser.parse_xmi_file(str(generic_associations_path))
+    assoc = next(a for a in result["associations"] if a["name"] == "professorCourses")
+    src, tgt = assoc["source"], assoc["target"]
+    if src["type_name"] == "Professor":
+        prof_end, course_end = src, tgt
+    else:
+        prof_end, course_end = tgt, src
+    assert prof_end["aggregation"] == "shared"
+    assert course_end["aggregation"] == "none"
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_plain(parser, generic_associations_path):
+    """Plain association: Student <-> Course enrollment, both aggregation=none."""
+    result = await parser.parse_xmi_file(str(generic_associations_path))
+    assoc = next(a for a in result["associations"] if a["name"] == "enrollment")
+    assert assoc["source"]["aggregation"] == "none"
+    assert assoc["target"]["aggregation"] == "none"
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_documentation(parser, generic_associations_path):
+    """Association documentation should be extracted."""
+    result = await parser.parse_xmi_file(str(generic_associations_path))
+    assoc_by_name = {a["name"]: a for a in result["associations"]}
+    assert "owns its required textbooks" in assoc_by_name["courseTextbooks"]["documentation"]
+    assert "teaches courses" in assoc_by_name["professorCourses"]["documentation"]
+    assert "enroll in courses" in assoc_by_name["enrollment"]["documentation"]
+
+
+@pytest.mark.asyncio
+async def test_generic_associations_enrollment_multiplicities(parser, generic_associations_path):
+    """Enrollment: both ends should be 0..*."""
+    result = await parser.parse_xmi_file(str(generic_associations_path))
+    assoc = next(a for a in result["associations"] if a["name"] == "enrollment")
+    for end in (assoc["source"], assoc["target"]):
+        assert end["multiplicity"]["lower"] == 0
+        assert end["multiplicity"]["upper"] == -1
