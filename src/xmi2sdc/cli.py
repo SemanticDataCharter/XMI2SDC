@@ -19,6 +19,7 @@ import click
 AGENT_REGISTRY: dict[str, tuple[str, str]] = {
     "parser": ("xmi2sdc.toolsets.parser", "XmiParserToolset"),
     "mapper": ("xmi2sdc.toolsets.mapper", "SdcMapperToolset"),
+    "assembler": ("xmi2sdc.toolsets.assembler", "SdcAssemblerToolset"),
 }
 
 _VALID_AGENTS = ", ".join(sorted(AGENT_REGISTRY))
@@ -281,6 +282,107 @@ async def _run_convert(config, xmi_file: str, model_name: str | None, output: st
 
 
 # ---------------------------------------------------------------------------
+# assemble
+# ---------------------------------------------------------------------------
+
+
+@main.command()
+@click.argument("mapping_json", type=click.Path(exists=True))
+@click.option("--title", required=True, help="Title for the new data model.")
+@click.option("--description", default="", help="Description for the data model.")
+@click.option(
+    "--token",
+    default=None,
+    envvar="SDCSTUDIO_TOKEN",
+    help="SDCStudio API token.  [env: SDCSTUDIO_TOKEN]",
+)
+@click.option(
+    "--base-url",
+    default=None,
+    help="SDCStudio base URL (overrides config).",
+)
+@click.option(
+    "--timeout",
+    default=300,
+    show_default=True,
+    help="Polling timeout in seconds.",
+)
+@click.pass_context
+def assemble(
+    ctx: click.Context,
+    mapping_json: str,
+    title: str,
+    description: str,
+    token: str | None,
+    base_url: str | None,
+    timeout: int,
+) -> None:
+    """Submit a mapping plan to the SDCStudio Assembly API."""
+    from xmi2sdc.common.config import load_config
+
+    try:
+        config = load_config(ctx.obj["config_path"])
+    except (FileNotFoundError, KeyError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    # CLI overrides
+    if token:
+        config.sdcstudio.token = token
+    if base_url:
+        config.sdcstudio.base_url = base_url
+
+    if not config.sdcstudio.token:
+        raise click.ClickException(
+            "API token required. Use --token or set SDCSTUDIO_TOKEN env var."
+        )
+
+    asyncio.run(_run_assemble(config, mapping_json, title, description, timeout))
+
+
+async def _run_assemble(
+    config,
+    mapping_json: str,
+    title: str,
+    description: str,
+    timeout: int,
+) -> None:
+    """Run the build → assemble → poll pipeline."""
+    from xmi2sdc.toolsets.assembler import SdcAssemblerToolset
+
+    mapping_plan = json.loads(Path(mapping_json).read_text())
+    assembler = SdcAssemblerToolset(config=config)
+
+    # Build assembly tree
+    click.echo(f"Building assembly tree from {mapping_json}...")
+    tree = await assembler.build_assembly_tree(mapping_plan)
+    cluster_count = len(tree.get("clusters", []))
+    comp_count = len(tree.get("components", []))
+    click.echo(f"  Root: {tree.get('label', '?')}")
+    click.echo(f"  Top-level clusters: {cluster_count}")
+    click.echo(f"  Top-level components: {comp_count}")
+
+    # Submit to Assembly API
+    click.echo(f"Submitting to {config.sdcstudio.base_url}...")
+    result = await assembler.execute_assembly(title, description, tree)
+    ct_id = result.get("data_source_ct_id", "")
+    status = result.get("status", "")
+    click.echo(f"  Status: {status}")
+    click.echo(f"  Data source ct_id: {ct_id}")
+
+    # Poll if async
+    if status == "processing" and ct_id:
+        click.echo(f"Polling for completion (timeout: {timeout}s)...")
+        final = await assembler.poll_status(ct_id, timeout_seconds=timeout)
+        click.echo(f"  Final status: {final.get('status', '?')}")
+        if final.get("analysis_results"):
+            click.echo(f"  Analysis: {json.dumps(final['analysis_results'], indent=2)}")
+    elif status == "completed":
+        click.echo("Assembly completed synchronously.")
+
+    click.echo("Done.")
+
+
+# ---------------------------------------------------------------------------
 # info
 # ---------------------------------------------------------------------------
 
@@ -307,6 +409,7 @@ def info(ctx: click.Context) -> None:
     tool_counts = {
         "parser": 3,
         "mapper": 3,
+        "assembler": 3,
     }
     for name in sorted(AGENT_REGISTRY):
         count = tool_counts.get(name, "?")
