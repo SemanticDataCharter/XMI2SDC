@@ -32,7 +32,7 @@ USER sdc
 ENV XMI2SDC_AGENT=""
 ENV XMI2SDC_CONFIG="/home/sdc/xmi2sdc.yaml"
 
-# Disable all telemetry — sovereign deployment, no phone-home
+# Disable all telemetry — self-hosted, no phone-home
 ENV OTEL_SDK_DISABLED="true"
 ENV OTEL_TRACES_EXPORTER="none"
 ENV OTEL_METRICS_EXPORTER="none"
