@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 XMI2SDC is an **agentic XMI/UML to SDC4 data model converter**. It uses a multi-agent pipeline built on the Google Agent Development Kit (ADK) to parse UML models exported from Sparx Enterprise Architect, MagicDraw, and other tools, then convert them into SDC4-compliant data models via the SDCStudio Assembly API.
 
 **Version**: 4.0.0
-**License**: Proprietary (Axius SDC, Inc.)
+**License**: Apache-2.0 (Copyright 2026 Axius SDC, Inc.)
 
 Built for **air-gapped, self-hosted** environments. No cloud dependencies required.
 
@@ -58,8 +58,9 @@ XMI File --> Parser Agent --> ParsedXmiModel --> Mapper Agent --> Mapping Plan J
 ### Environment Setup
 
 ```bash
-# Activate conda environment
-conda activate SDCStudio
+# Create and activate a fresh environment (any tool works; conda shown)
+conda create -n XMI2SDC python=3.12
+conda activate XMI2SDC
 
 # Install in development mode
 pip install -e ".[dev]"

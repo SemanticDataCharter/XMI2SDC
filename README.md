@@ -1,8 +1,8 @@
 # XMI2SDC
 
-[![CI](https://github.com/Axius-SDC/XMI2SDC/actions/workflows/ci.yml/badge.svg)](https://github.com/Axius-SDC/XMI2SDC/actions/workflows/ci.yml)
+[![CI](https://github.com/SemanticDataCharter/XMI2SDC/actions/workflows/ci.yml/badge.svg)](https://github.com/SemanticDataCharter/XMI2SDC/actions/workflows/ci.yml)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
-![License: Proprietary](https://img.shields.io/badge/license-Proprietary-red)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 
 ![XMI2SDC — Agentic XMI/UML to SDC4 Converter](images/XMI2SDC_Hero.png)
 
@@ -37,14 +37,25 @@ Built for **air-gapped, self-hosted** environments. No cloud dependencies requir
 | Class (composite) | Cluster | |
 | Composition association | Cluster containment | |
 
+## Requirements
+
+- **Python 3.11+**
+- **An LLM endpoint** reachable via [litellm](https://github.com/BerriAI/litellm), a frontier-model API key or a local model, for the LLM-assisted analysis and edge-case mapping steps.
+- **For `assemble` only:** a reachable **SDCStudio Assembly API** (the hosted [sdcstudio.axius-sdc.com](https://sdcstudio.axius-sdc.com/) or a self-hosted instance) plus an API key via `SDCSTUDIO_API_KEY` (or `--api-key`).
+
+`convert` (parse + map to a mapping plan) runs fully standalone; only `assemble` needs SDCStudio access.
+
 ## Installation
 
 ```bash
+# Install the package and its dependencies
 pip install -e .
 
-# Development
+# Development (tests, linters)
 pip install -e ".[dev]"
 ```
+
+A `requirements.txt` mirroring the runtime dependencies is provided to build an environment directly: `pip install -r requirements.txt`.
 
 ## Quick Start
 
@@ -181,10 +192,9 @@ See [SECURITY.md](SECURITY.md) for the security policy and vulnerability reporti
 
 ## Related Projects
 
-- [SDCStudio](https://github.com/Axius-SDC/SDCStudio) — SDC4 data model platform (Assembly API provider)
-- [SDC Agents](https://github.com/SemanticDataCharter/SDC_Agents) — Runtime agent suite for SDC4 workflows
-- [sdcvalidator](https://github.com/SemanticDataCharter/sdcvalidator) — SDC4 schema validation library
+- [SDCStudio](https://sdcstudio.axius-sdc.com/) — the SDC4 data model platform and Assembly API provider that XMI2SDC targets.
+- [SDC repositories](https://semanticdatacharter.com/repositories.html) — the open-source SDC ecosystem (validators, agents, and tooling).
 
 ## License
 
-Proprietary. Copyright 2026 Axius SDC, Inc. All rights reserved. See [LICENSE](LICENSE).
+Apache License 2.0. Copyright 2026 Axius SDC, Inc. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
