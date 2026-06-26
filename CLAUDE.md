@@ -58,8 +58,9 @@ XMI File --> Parser Agent --> ParsedXmiModel --> Mapper Agent --> Mapping Plan J
 ### Environment Setup
 
 ```bash
-# Activate conda environment
-conda activate SDCStudio
+# Create and activate a fresh environment (any tool works; conda shown)
+conda create -n XMI2SDC python=3.12
+conda activate XMI2SDC
 
 # Install in development mode
 pip install -e ".[dev]"
