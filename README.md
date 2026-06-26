@@ -37,14 +37,25 @@ Built for **air-gapped, self-hosted** environments. No cloud dependencies requir
 | Class (composite) | Cluster | |
 | Composition association | Cluster containment | |
 
+## Requirements
+
+- **Python 3.11+**
+- **An LLM endpoint** reachable via [litellm](https://github.com/BerriAI/litellm), a frontier-model API key or a local model, for the LLM-assisted analysis and edge-case mapping steps.
+- **For `assemble` only:** a reachable **SDCStudio Assembly API** (the hosted [sdcstudio.axius-sdc.com](https://sdcstudio.axius-sdc.com/) or a self-hosted instance) plus an API key via `SDCSTUDIO_API_KEY` (or `--api-key`).
+
+`convert` (parse + map to a mapping plan) runs fully standalone; only `assemble` needs SDCStudio access.
+
 ## Installation
 
 ```bash
+# Install the package and its dependencies
 pip install -e .
 
-# Development
+# Development (tests, linters)
 pip install -e ".[dev]"
 ```
+
+A `requirements.txt` mirroring the runtime dependencies is provided to build an environment directly: `pip install -r requirements.txt`.
 
 ## Quick Start
 

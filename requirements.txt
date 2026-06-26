@@ -1,0 +1,9 @@
+# Runtime dependencies for XMI2SDC.
+# Canonical source is pyproject.toml [project].dependencies — keep in sync.
+# For an editable install with dev tooling: pip install -e ".[dev]"
+google-adk>=1.25
+litellm>=1.75.5
+click>=8
+pydantic>=2
+pyyaml>=6
+httpx>=0.27
