@@ -107,6 +107,42 @@ def _map_multiplicity(lower: int, upper: int) -> dict:
     }
 
 
+# Vocabularies used by the inheritance-provenance semantic links (see the
+# "namespaces" block emitted in the mapping plan). Both are ratified and
+# already part of the SDC stack; no predicate is invented here.
+PROVENANCE_NAMESPACES = {
+    "prov": "http://www.w3.org/ns/prov#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+}
+
+# Stable, greppable fence for the human-readable provenance note appended to an
+# inherited component's description. Lets a reader (and a tool) find or strip it.
+_PROVENANCE_FENCE = "[XMI2SDC provenance]"
+
+
+def _append_provenance_note(description: str, introduced_by: str) -> str:
+    """Append a fenced provenance note for an inherited (materialized) attribute.
+
+    The note tells the human-in-the-loop where the attribute came from and how
+    to contain it if reconstructing the original hierarchy. It guides the
+    containment decision without dictating it: in SDC any component may be
+    placed in any Cluster, and that call belongs to the human.
+
+    Args:
+        description: The component's existing description (may be empty).
+        introduced_by: Name of the ancestor class that introduced the attribute.
+
+    Returns:
+        The description with the fenced provenance note appended.
+    """
+    note = (
+        f"{_PROVENANCE_FENCE} Inherited from UML class {introduced_by}. "
+        f"In the source model this attribute belonged to {introduced_by}; "
+        f"if reconstructing the original hierarchy, contain it accordingly."
+    )
+    return f"{description}\n\n{note}" if description else note
+
+
 class SdcMapperToolset(BaseToolset):
     """Deterministic UML-to-SDC4 type mapper — no LLM in Phase 1.
 
@@ -158,6 +194,7 @@ class SdcMapperToolset(BaseToolset):
 
         # Build class lookup for association resolution
         all_classes = self._collect_all_classes(parsed_model)
+        class_name_by_id = {c.get("xmi_id", ""): c.get("name", "") for c in all_classes}
         enum_map = self._build_enum_map(parsed_model)
 
         # Map each class
@@ -168,14 +205,22 @@ class SdcMapperToolset(BaseToolset):
             unmapped.extend(class_result.get("unmapped", []))
             # Add cluster definition if class has components
             if class_result.get("is_cluster") and class_result.get("cluster_name"):
-                clusters.append(
-                    {
-                        "cluster_name": class_result["cluster_name"],
-                        "source_xmi_id": class_result.get("source_xmi_id", ""),
-                        "description": class_result.get("description", ""),
-                        "component_refs": class_result.get("component_refs", []),
-                    }
-                )
+                cluster_def = {
+                    "cluster_name": class_result["cluster_name"],
+                    "source_xmi_id": class_result.get("source_xmi_id", ""),
+                    "description": class_result.get("description", ""),
+                    "component_refs": class_result.get("component_refs", []),
+                }
+                # Record the generalization edges as rdfs:subClassOf links so the
+                # class hierarchy is reconstructable from the flat model.
+                subclass_links = [
+                    {"predicate": "rdfs:subClassOf", "object": class_name_by_id[pid]}
+                    for pid in cls.get("parent_xmi_ids", [])
+                    if class_name_by_id.get(pid)
+                ]
+                if subclass_links:
+                    cluster_def["semantic_links"] = subclass_links
+                clusters.append(cluster_def)
 
         # Map associations to cluster containment or association clusters
         for assoc in parsed_model.get("associations", []):
@@ -188,6 +233,7 @@ class SdcMapperToolset(BaseToolset):
         result = {
             "model_name": model_name,
             "dialect": parsed_model.get("dialect", "generic_xmi21"),
+            "namespaces": PROVENANCE_NAMESPACES,
             "components": components,
             "clusters": clusters,
             "unmapped": unmapped,
@@ -328,6 +374,23 @@ class SdcMapperToolset(BaseToolset):
 
             doc = attr.get("documentation", "")
 
+            # Inheritance provenance. If this attribute was introduced by an
+            # ancestor (flatten stamped introduced_by_*), record where it came
+            # from: a prov:wasDerivedFrom link for machines, and a fenced note
+            # in the description for the human doing containment. Own attributes
+            # carry no link and no note, so their output is unchanged.
+            introduced_by = attr.get("introduced_by_name", "")
+            is_inherited = bool(introduced_by) and introduced_by != class_name
+            sem_links: list[dict] = []
+            if is_inherited:
+                sem_links = [
+                    {
+                        "predicate": "prov:wasDerivedFrom",
+                        "object": f"{introduced_by}.{attr_name}",
+                    }
+                ]
+                doc = _append_provenance_note(doc, introduced_by)
+
             # Check if type is an enumeration
             if type_name in enum_map:
                 comp = {
@@ -340,6 +403,8 @@ class SdcMapperToolset(BaseToolset):
                     "label": f"{class_name}.{attr_name}",
                     **_map_multiplicity(mult.get("lower", 1), mult.get("upper", 1)),
                 }
+                if sem_links:
+                    comp["semantic_links"] = sem_links
                 components.append(comp)
                 continue
 
@@ -354,6 +419,8 @@ class SdcMapperToolset(BaseToolset):
                 **type_mapping,
                 **_map_multiplicity(mult.get("lower", 1), mult.get("upper", 1)),
             }
+            if sem_links:
+                comp["semantic_links"] = sem_links
 
             if "unmapped_source_type" in type_mapping:
                 unmapped.append(comp)
