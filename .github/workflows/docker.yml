@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: axius-sdc/xmi2sdc
+  IMAGE_NAME: semanticdatacharter/xmi2sdc
 
 jobs:
   build-and-push:
