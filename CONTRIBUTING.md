@@ -50,7 +50,7 @@ For these contributions, please open an issue first to discuss your proposal.
 
 1. **Fork the Repository**
    ```bash
-   # Visit https://github.com/Axius-SDC/XMI2SDC
+   # Visit https://github.com/SemanticDataCharter/XMI2SDC
    # Click "Fork" to create your own copy
    ```
 
@@ -75,7 +75,7 @@ For these contributions, please open an issue first to discuss your proposal.
 
 5. **Add Upstream Remote**
    ```bash
-   git remote add upstream git@github.com:Axius-SDC/XMI2SDC.git
+   git remote add upstream git@github.com:SemanticDataCharter/XMI2SDC.git
    ```
 
 6. **Stay Updated**
@@ -244,6 +244,6 @@ By submitting a contribution, you agree that it is licensed under the Apache Lic
 
 ## Questions?
 
-- Open a [GitHub Issue](https://github.com/Axius-SDC/XMI2SDC/issues)
+- Open a [GitHub Issue](https://github.com/SemanticDataCharter/XMI2SDC/issues)
 
 Thank you for contributing to XMI2SDC!
