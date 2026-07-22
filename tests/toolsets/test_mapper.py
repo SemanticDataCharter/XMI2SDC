@@ -650,3 +650,123 @@ async def test_map_generic_university_associations(mapper, generic_associations_
 
     plain_clusters = [c for c in mapping["clusters"] if c.get("association_type") == "plain"]
     assert len(plain_clusters) == 1
+
+
+# --- Inheritance provenance + lossless round-trip (issue #11) ---
+
+
+def _fish_parsed_model() -> dict:
+    """Fish -> Herring -> DanubeHerring, as a parsed-model dict for map_model."""
+    return {
+        "model_name": "fish_taxonomy",
+        "dialect": "sparx_ea",
+        "packages": [
+            {
+                "xmi_id": "PKG",
+                "name": "Fish Taxonomy",
+                "sub_packages": [],
+                "enumerations": [],
+                "classes": [
+                    {
+                        "xmi_id": "FISH",
+                        "name": "Fish",
+                        "parent_xmi_ids": [],
+                        "attributes": [
+                            {"name": "head", "type_name": "String", "documentation": "d"},
+                            {"name": "scales", "type_name": "String", "documentation": "d"},
+                            {"name": "fins", "type_name": "String", "documentation": "d"},
+                            {"name": "tail", "type_name": "String", "documentation": "d"},
+                        ],
+                    },
+                    {
+                        "xmi_id": "HERRING",
+                        "name": "Herring",
+                        "parent_xmi_ids": ["FISH"],
+                        "attributes": [
+                            {"name": "herringSmell", "type_name": "String", "documentation": "d"}
+                        ],
+                    },
+                    {
+                        "xmi_id": "DANUBE",
+                        "name": "DanubeHerring",
+                        "parent_xmi_ids": ["HERRING"],
+                        "attributes": [
+                            {"name": "iodineSmell", "type_name": "String", "documentation": "d"}
+                        ],
+                    },
+                ],
+            }
+        ],
+        "associations": [],
+        "top_level_classes": [],
+        "top_level_enumerations": [],
+    }
+
+
+@pytest.mark.asyncio
+async def test_inherited_component_carries_wasderivedfrom(mapper):
+    plan = await mapper.map_model(_fish_parsed_model())
+    by_label = {c["label"]: c for c in plan["components"]}
+    # DanubeHerring.head came from Fish, not Herring
+    links = by_label["DanubeHerring.head"]["semantic_links"]
+    assert links == [{"predicate": "prov:wasDerivedFrom", "object": "Fish.head"}]
+    # and the human-facing note is in the description
+    assert (
+        "[XMI2SDC provenance] Inherited from UML class Fish"
+        in by_label["DanubeHerring.head"]["description"]
+    )
+
+
+@pytest.mark.asyncio
+async def test_own_component_has_no_semantic_links(mapper):
+    """Backward-compatible: non-inherited components are unchanged (no links key)."""
+    plan = await mapper.map_model(_fish_parsed_model())
+    by_label = {c["label"]: c for c in plan["components"]}
+    assert "semantic_links" not in by_label["Fish.head"]
+    assert "semantic_links" not in by_label["DanubeHerring.iodineSmell"]
+
+
+@pytest.mark.asyncio
+async def test_cluster_subclassof_edges(mapper):
+    plan = await mapper.map_model(_fish_parsed_model())
+    edges = {}
+    for cl in plan["clusters"]:
+        for link in cl.get("semantic_links", []):
+            if link["predicate"] == "rdfs:subClassOf":
+                edges.setdefault(cl["cluster_name"], []).append(link["object"])
+    assert edges == {"Herring": ["Fish"], "DanubeHerring": ["Herring"]}
+    assert plan["namespaces"] == {
+        "prov": "http://www.w3.org/ns/prov#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    }
+
+
+@pytest.mark.asyncio
+async def test_lossless_class_diagram_reconstruction(mapper):
+    """The whole point: rebuild the original class diagram from the flat plan,
+    with no name-guessing, purely from prov:wasDerivedFrom + rdfs:subClassOf."""
+    plan = await mapper.map_model(_fish_parsed_model())
+
+    # Own attrs of a class = its components with no wasDerivedFrom link
+    own: dict[str, list[str]] = {}
+    for c in plan["components"]:
+        cls_name = c["label"].split(".", 1)[0]
+        inherited = any(
+            link["predicate"] == "prov:wasDerivedFrom" for link in c.get("semantic_links", [])
+        )
+        if not inherited:
+            own.setdefault(cls_name, []).append(c["source_attribute"])
+
+    parents: dict[str, list[str]] = {}
+    for cl in plan["clusters"]:
+        for link in cl.get("semantic_links", []):
+            if link["predicate"] == "rdfs:subClassOf":
+                parents.setdefault(cl["cluster_name"], []).append(link["object"])
+
+    # Reconstructed diagram matches the original exactly
+    assert own["Fish"] == ["head", "scales", "fins", "tail"]
+    assert own["Herring"] == ["herringSmell"]
+    assert own["DanubeHerring"] == ["iodineSmell"]
+    assert parents.get("Fish", []) == []
+    assert parents["Herring"] == ["Fish"]
+    assert parents["DanubeHerring"] == ["Herring"]

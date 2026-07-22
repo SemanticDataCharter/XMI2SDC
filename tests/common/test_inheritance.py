@@ -269,3 +269,54 @@ class TestFlattenInheritance:
         model = _make_fish_model()
         result = flatten_inheritance(model)
         assert result is model
+
+
+class TestInheritanceProvenance:
+    """Each attribute is tagged with the class that introduced it (origin)."""
+
+    def test_own_attributes_tagged_with_owner(self):
+        model = _make_fish_model()
+        flatten_inheritance(model)
+        classes = model["packages"][0]["classes"]
+        fish, herring, danube = classes[0], classes[1], classes[2]
+        # Own attrs carry their own class as origin
+        assert all(a["introduced_by_name"] == "Fish" for a in fish["attributes"])
+        assert herring["attributes"][0]["introduced_by_name"] == "Herring"
+        assert danube["attributes"][0]["introduced_by_name"] == "DanubeHerring"
+
+    def test_inherited_attribute_keeps_true_origin(self):
+        model = _make_fish_model()
+        flatten_inheritance(model)
+        danube = model["packages"][0]["classes"][2]
+        origin = {a["name"]: a["introduced_by_name"] for a in danube["all_attributes"]}
+        # head came from Fish (not Herring, not DanubeHerring); the chain is preserved
+        assert origin["head"] == "Fish"
+        assert origin["herringSmell"] == "Herring"
+        assert origin["iodineSmell"] == "DanubeHerring"
+
+    def test_override_origin_is_the_overriding_class(self):
+        model = {
+            "model_name": "override",
+            "packages": [],
+            "associations": [],
+            "top_level_classes": [
+                {
+                    "xmi_id": "P",
+                    "name": "Parent",
+                    "parent_xmi_ids": [],
+                    "attributes": [{"name": "color", "type_name": "String"}],
+                },
+                {
+                    "xmi_id": "C",
+                    "name": "Child",
+                    "parent_xmi_ids": ["P"],
+                    "attributes": [{"name": "color", "type_name": "String"}],
+                },
+            ],
+            "top_level_enumerations": [],
+        }
+        flatten_inheritance(model)
+        child = model["top_level_classes"][1]
+        color = {a["name"]: a for a in child["all_attributes"]}["color"]
+        # The child redefines color, so origin is the child
+        assert color["introduced_by_name"] == "Child"

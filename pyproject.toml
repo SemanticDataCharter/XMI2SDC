@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "xmi2sdc"
-version = "4.0.0"
+version = "4.1.0"
 description = "Agentic XMI/UML to SDC4 data model converter"
 readme = "README.md"
 license = {text = "Apache-2.0"}

@@ -99,6 +99,18 @@ def _resolve_class(
 
     # Own attributes override inherited ones with the same name
     own_attrs = cls.get("attributes", [])
+
+    # Tag each own attribute with its introducing class (provenance origin).
+    # Attributes merge by reference, so stamping the origin here — at the class
+    # that actually defines the attribute — propagates it to every descendant
+    # that inherits the attribute. setdefault stamps the origin exactly once,
+    # by the owning class, and is never overwritten downstream. This lets a
+    # flattened (materialized) component still record which ancestor introduced
+    # it, so the class diagram can be reconstructed rather than approximated.
+    for attr in own_attrs:
+        attr.setdefault("introduced_by_xmi_id", xmi_id)
+        attr.setdefault("introduced_by_name", cls.get("name", ""))
+
     own_names = {a["name"] for a in own_attrs}
     merged = [a for a in inherited if a["name"] not in own_names]
     merged.extend(own_attrs)
