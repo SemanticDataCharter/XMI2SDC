@@ -24,4 +24,21 @@ class AssemblyApiError(AssemblyError):
 
 
 class InsufficientFundsError(AssemblyError):
-    """Raised when the wallet has insufficient funds (HTTP 402)."""
+    """
+    Raised when SDCStudio returns HTTP 402.
+
+    Carries the server's credits figures when present. Users are quoted credits
+    at 1,000 per USD, so anything shown to a person uses ``*_credits``; the USD
+    values are retained for accounting.
+    """
+
+    def __init__(
+        self,
+        message: str = "Insufficient credits.",
+        *,
+        estimated_cost_credits: int | None = None,
+        balance_credits: int | None = None,
+    ):
+        self.estimated_cost_credits = estimated_cost_credits
+        self.balance_credits = balance_credits
+        super().__init__(message)
