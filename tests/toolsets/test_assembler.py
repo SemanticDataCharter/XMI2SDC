@@ -343,8 +343,22 @@ async def test_execute_assembly_400(assembler):
 
 
 @pytest.mark.asyncio
-async def test_execute_assembly_402(assembler):
-    mock_resp = _mock_response(402, {"error": "insufficient funds"})
+async def test_execute_assembly_402_uses_the_servers_message(assembler):
+    """
+    The server writes a good sentence, quoted in credits. We surface it rather
+    than prefixing our own and dumping the raw body at the user.
+    """
+    mock_resp = _mock_response(
+        402,
+        {
+            "error": "Insufficient credits. This needs 500 credits; you have 200.",
+            "error_type": "insufficient_funds",
+            "estimated_cost_credits": 500,
+            "balance_credits": 200,
+            "estimated_cost": "0.50",
+            "balance": "0.20",
+        },
+    )
     with patch("xmi2sdc.toolsets.assembler.httpx.AsyncClient") as mock_client_cls:
         mock_client = AsyncMock()
         mock_client.post = AsyncMock(return_value=mock_resp)
@@ -352,7 +366,34 @@ async def test_execute_assembly_402(assembler):
         mock_client.__aexit__ = AsyncMock(return_value=False)
         mock_client_cls.return_value = mock_client
 
-        with pytest.raises(InsufficientFundsError, match="Insufficient wallet funds"):
+        with pytest.raises(InsufficientFundsError) as exc:
+            await assembler.execute_assembly("Test", "desc", {"label": "M"})
+
+    err = exc.value
+    assert str(err) == "Insufficient credits. This needs 500 credits; you have 200."
+    assert "wallet funds" not in str(err), "the dollar-era prefix is gone"
+    assert "{" not in str(err), "the raw body is no longer dumped at the user"
+    # credits carried from the server, not re-derived
+    assert err.estimated_cost_credits == 500
+    assert err.balance_credits == 200
+
+
+@pytest.mark.asyncio
+async def test_execute_assembly_402_falls_back_when_body_is_not_json(assembler):
+    """An older or misbehaving server must still produce a usable error."""
+    mock_resp = httpx.Response(
+        status_code=402,
+        content=b"payment required",  # not JSON, so .json() raises
+        request=httpx.Request("POST", "http://test:8000/api/v1/dmgen/assemble/"),
+    )
+    with patch("xmi2sdc.toolsets.assembler.httpx.AsyncClient") as mock_client_cls:
+        mock_client = AsyncMock()
+        mock_client.post = AsyncMock(return_value=mock_resp)
+        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+        mock_client.__aexit__ = AsyncMock(return_value=False)
+        mock_client_cls.return_value = mock_client
+
+        with pytest.raises(InsufficientFundsError, match="Insufficient credits"):
             await assembler.execute_assembly("Test", "desc", {"label": "M"})
 
 

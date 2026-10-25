@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 MAJOR = SDC Reference Model generation (4), MINOR = features, PATCH = fixes.
 
+## [4.1.2] - 2026-10-25
+
+### Security
+
+- CI and release workflows install pip 26.2.2 from a hash-pinned wheel right after Python is set up, before any
+  other install. pip before 26.2.2 vendors a certifi that still trusts the emSign root removed after the eMudhra
+  intermediate-CA key compromise (October 2026), so the release is built and published with the fixed pip.
+  No change to the package's code.
+
+## [4.1.1] - 2026-08-24
+
+### Fixed
+
+- A 402 from SDCStudio surfaces the server's own message, quoted in credits, instead of a stale "Insufficient wallet
+  funds" prefix around the raw JSON.
+
 ## [4.1.0] - 2026-07-21
 
 ### Added
