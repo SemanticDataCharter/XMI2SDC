@@ -1,0 +1,20 @@
+# Conda environment for developing and testing XMI2SDC.
+#
+#   conda env create -f environment.yml
+#   conda activate XMI2SDC
+#   pip install -e ".[dev]"
+#
+# Its own environment because it depends on google-adk, which SDCStudio removed
+# deliberately during the 2026-08 AI-stack modernization (its pin cascade was
+# blocking Dependabot), so the SDCStudio env cannot run these tests.
+#
+# Unlike SDC_Agents and SDC_AgentsSMB, this one provides a distinct module
+# (`xmi2sdc`), so it will not collide with them. Keep it separate anyway.
+name: XMI2SDC
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - -e .[dev]

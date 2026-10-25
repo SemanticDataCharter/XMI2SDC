@@ -232,7 +232,7 @@ class SdcAssemblerToolset(BaseToolset):
 
         Raises:
             AssemblyApiError: On 400 or other unexpected API errors.
-            InsufficientFundsError: On HTTP 402 (wallet balance too low).
+            InsufficientFundsError: On HTTP 402 (not enough credits).
         """
         start = time.monotonic()
 
@@ -255,7 +255,19 @@ class SdcAssemblerToolset(BaseToolset):
 
         result: Dict[str, Any]
         if response.status_code == 402:
-            raise InsufficientFundsError(f"Insufficient wallet funds: {response.text}")
+            # The server already writes a good sentence, quoted in credits.
+            # Use it rather than prefixing our own and dumping raw JSON.
+            try:
+                body = response.json()
+            except ValueError:
+                body = {}
+            raise InsufficientFundsError(
+                body.get("error")
+                or body.get("detail")
+                or f"Insufficient credits: {response.text}",
+                estimated_cost_credits=body.get("estimated_cost_credits"),
+                balance_credits=body.get("balance_credits"),
+            )
         elif response.status_code == 400:
             raise AssemblyApiError(f"Assembly validation error: {response.text}")
         elif response.status_code in (200, 201):
